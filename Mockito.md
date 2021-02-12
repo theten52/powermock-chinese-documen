@@ -237,22 +237,24 @@ public class XTest {
 }
 ```
 
-### How to verify construction of new objects ###
-Use PowerMockito.verifyNew, e.g.
+### 如何验证新对象的构造
+
+使用PowerMockito.verifyNew，例如
 
 ```java
 verifyNew(MyClass.class).withNoArguments();
 ```
 
-### How to use argument matchers ###
-Mockito matchers are may still applied to a PowerMock mock:
+### 如何使用参数匹配器
+
+如何使用参数匹配器mock:
 
 ```java
 Mockito.verify(mockObj).methodToMock(Mockito.anyInt());  
 ```
 
 
-### A full example of spying ###
+### Spy的完整示例 ###
 ```java
 @RunWith(PowerMockRunner.class)
 // We prepare PartialMockClass for test because it's final or we need to mock private or static methods
@@ -274,8 +276,8 @@ public class YourTestCase {
 }
 ```
 
-### A full example of partial mocking of a private method ###
-(Available in PowerMock version 1.3.6+)
+### 私有方法的部分模拟的完整示例 ###
+（在PowerMock版本1.3.6+中可用）
 
 ```java
 @RunWith(PowerMockRunner.class)
@@ -301,29 +303,27 @@ public class YourTestCase {
 ## Mockito mock-maker-inline ##
 
 ```
-Feature available as of PowerMock 1.7.0
+在PowerMock版本1.7.0中可用
 ```
 
-The Mockito team added the support for [mocking of final classes/methods](https://github.com/mockito/mockito/wiki/What%27s-new-in-Mockito-2#mock-the-unmockable-opt-in-mocking-of-final-classesmethods) in Mockito 2.1.0. This feature can be enabled in PowerMock by adding the following file
-`src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker` containing a single line:
+Mockito团队在Mockito 2.1.0中增加了对[final类/方法](https://github.com/mockito/mockito/wiki/What's-new-in-Mockito-2#mock-the-unmockable-opt-in-mocking-of-final-classesmethods)进行mock的支持。通过在`src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker`中添加包含以下一行的文件，可以在PowerMock中启用此功能 ：
 
 ```
 mock-maker-inline
 ```
 
-PowerMock implements its own `MockMaker` which leads to incompatibility with Mockito `mock-maker-inline`, even if PowerMock is just added as a dependency and not used. If two `org.mockito.plugins.MockMaker` exist in path then any only one can be used, which one is undetermined.
+PowerMock实现了自己的`MockMaker`，这导致与Mockito的`mock-maker-inline`不兼容，即使PowerMock只是作为依赖添加而未使用。如果在类路径中存在两个`org.mockito.plugins.MockMaker`，则只能使用其中一个，但不确定是哪一个。
 
-PowerMock can however delegate calls to another `MockMaker`, and for then tests are run without PowerMock.
-Since PowerMock 1.7.0 this can be configured with using the [PowerMock Configuration](PowerMock-Configuration).
+但是PowerMock可以将调用委托给另一个`MockMaker`，因此无需PowerMock即可运行测试。从PowerMock 1.7.0开始，可以使用[PowerMock Configuration进行配置](PowerMock-Configuration)。
 
-The `MockMaker` can be configured by creating the file `org/powermock/extensions/configuration.properties` and setting:
+该`MockMaker`可以通过创建`org/powermock/extensions/configuration.properties`文件来配置和设置：
 
 ```properties
 mockito.mock-maker-class=mock-maker-inline
 ```
 
-Example of using Mockito `mock-maker-inline` with PowerMock:
+将Mockito`mock-maker-inline`与PowerMock结合使用的示例：
 https://github.com/powermock/powermock-examples-maven/tree/master/mockito2
 
-## Further information ##
-Have a look at the [source](https://github.com/powermock/powermock/tree/master/tests/mockito/junit4/src/test/java/samples/powermockito/junit4) in GitHub for examples. Also read the PowerMockito related [blog](http://blog.jayway.com/2009/10/28/untestable-code-with-mockito-and-powermock/) at the [Jayway team blog](http://blog.jayway.com/).
+## 更多信息 ##
+请查看GitHub中的示例[源码](https://github.com/powermock/powermock/tree/master/tests/mockito/junit4/src/test/java/samples/powermockito/junit4)。也可以参考在[Jayway团队博客](http://blog.jayway.com/)中PowerMockito的相关[博客](http://blog.jayway.com/2009/10/28/untestable-code-with-mockito-and-powermock/)。
