@@ -1,0 +1,1 @@
+PowerMock has support for OSGi using a third-party library maintained by Gabor Liptak. You can read more about it <a href='https://code.google.com/p/powermock-osgi/'>here</a>.
