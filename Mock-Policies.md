@@ -7,11 +7,7 @@
 
 ## 示例 ##
 
-A Mock Policy can be used to make it easier to unit test some code with PowerMock in isolation from a certain framework. A mock policy implementation can for example suppress some methods, suppress static initializers or intercept method calls and change their return value (for example to return a mock object) for a certain framework or set of classes or interfaces. A mock policy can for example be implemented to avoid writing repetitive setup code for your tests. Say that you're using a framework X and that in order for you to test it requires that certain methods should always return a mock implementation. Perhaps some static initializers must be suppressed as well. Instead of copying this code between tests it would be a good idea to write a reusable mock policy.
-
-PowerMock 1.1 provides three mock policies out of the box for mocking slf4j, java common-logging and log4j. Let's pick slf4j as an example and let's say you have a class that looks like this:
-
-可以使用Mock策略使与PowerMock隔离的某些框架的代码的单元测试变得更容易。Mock策略的实现可以是如抑制某些方法，抑制静态初始化程序或拦截方法调用，并更改某些框架或一组类或接口的返回值（例如，返回模拟对象）。例如，可以实施模拟策略来避免为测试编写重复的设置代码。假设您使用的是框架X，并且要对其进行测试，则要求某些方法应始终返回模拟实现。也许也必须抑制某些静态初始化程序。与其在测试之间复制该代码，不如编写一个可重用的模拟策略。
+可以使用Mock策略使得与PowerMock隔离的某些框架的代码的单元测试变得更容易。Mock策略的实现可以是如抑制某些方法，抑制静态初始化程序或拦截方法调用，并更改某些框架或一组类或接口的返回值（例如，返回模拟对象）。例如，可以实施模拟策略来避免为测试编写重复的设置代码。假设您使用的是框架X，并且要对其进行测试，则要求某些方法应始终返回模拟实现。也许也必须抑制某些静态初始化程序。与其在测试之间复制该代码，不如编写一个可重用的模拟策略。
 
 PowerMock 1.1提供了三种开箱即用的模拟策略，用于模拟slf4j，java common-logging和log4j。让我们以slf4j为例，假设您有一个看起来像这样的类：
 
@@ -25,8 +21,6 @@ public class Slf4jUser {
 	}
 }
 ```
-
-Here we have a problem because the logger gets instantiated in the static initializer of the Slf4jUser class. Sometimes this leads to problems depending on the log configuration so what you want to do in a unit-test is to stub out the log instance. This is fully doable without using mock policies. One way to do this is to start by suppressing the static initializer of the Slf4jUser class from our test. We can then create a stub or nice mock of the Logger class and inject it to the Slf4jUser instance. But this is not enough, imagine that we've configured slf4j to use log4j as logging back-end then we'll get the following error printed in the console while running the test:
 
 这里有一个问题，因为logger在Slf4jUser类的静态初始化器中实例化。有时，这会导致问题，具体取决于日志配置，因此在单元测试中要做的是‘存根’（或者说是‘打桩’）日志实例。这是完全可行的，无需使用Mock策略。一种方法是从测试中禁止Slf4jUser类的静态初始化程序开始。然后，我们可以创建Logger类的存根或漂亮的模拟并将其注入Slf4jUser实例。但这还不够，假设我们已经配置了slf4j以使用log4j作为后端日志，那么在运行测试时，控制台中将显示以下错误：
 
@@ -110,8 +104,6 @@ public class Dependency {
 	}
 }
 ```
-Let's say that we'd like to return a custom `DataObject` each time the `getData` method is called, i.e. we want to intercept the call to `getData` and make it return our custom object. To create a reusable mock policy that does exactly this we start by creating a new class called `MyCustomMockPolicy` that implements the `org.powermock.core.spi.PowerMockPolicy` interface. The full code for this can be seen below:
-
 假设我们想在每次调用`getData`该方法时都返回一个`DataObject`自定义，即我们要拦截`getData`对它的调用并使它返回我们的自定义对象。为了创建一个可重用的Mock策略来做到这一点，我们首先创建一个实现`org.powermock.core.spi.PowerMockPolicy`接口的新类`MyCustomMockPolicy`。完整的代码如下所示：
 
 ```java
@@ -149,8 +141,6 @@ public class DependencyUser {
 	}
 }
 ```
-
-If we apply our mock policy to a test of the `DependencyUser` instance the `DataObject` returned by the `Dependency` instance will be the one we created in the `MyCustomMockPolicy#applyInterceptionPolicy(..)` method. Here's a simple test to prove that this really happens:
 
 如果将Mock策略应用于`DependencyUser`实例的测试，则`Dependency`实例返回的值`DataObject`将是我们在`MyCustomMockPolicy#applyInterceptionPolicy(..)`方法中创建的。这是一个简单的测试，可以证明这种情况确实发生了：
 

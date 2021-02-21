@@ -54,5 +54,4 @@ PowerMock 可以将调用委托给另一个 `MockMaker`, 这些测试无需Power
 mockito.mock-maker-class=mock-maker-inline
 ```
 
-这是一个关于在PowerMock中使用 Mockito `mock-maker-inline` 的[示例](https://github.com/powermock/powermock-examples-maven/tree/master/mockito2) 
-
+这是一个关于在PowerMock中使用 Mockito `mock-maker-inline` 的[示例](https://github.com/powermock/powermock-examples-maven/tree/master/mockito2) 。
