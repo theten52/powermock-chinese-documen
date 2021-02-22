@@ -2,7 +2,7 @@
 
 ## 总览 ##
 
-[Whitebox](http://www.javadoc.io/doc/org.powermock/powermock-reflect/2.0.0) 类提供了一组方法，如果需要，您可以帮助绕过封装。通常，获取/修改非公共字段不是一个好主意，但有时这是通过测试来覆盖代码以供将来重构的唯一方法。
+[Whitebox](http://www.javadoc.io/doc/org.powermock/powermock-reflect/2.0.0) 类提供了一组方法，如果需要，可以帮助您绕过封装。通常，获取/修改非公共字段不是一个好主意，但有时这是通过测试来覆盖代码以供将来重构的唯一方法。
 
  
 
@@ -16,7 +16,7 @@
 ## 示例 ##
 
 ### 访问内部状态 ###
-对于可变对象，在调用方法后内部状态可能会更改。在对此类对象进行单元测试时，最好有一种简单的方法来保持此状态并查看其是否已相应更新。PowerMock提供了几种有用的反工具，这些反射工具专门设计用于单元测试。所有这些反射工具都位于`org.powermock.reflect.Whitebox`类中。
+对于可变对象，在调用方法后内部状态可能会更改。在对此类对象进行单元测试时，最好有一种简单的方法来保持此状态并查看其是否已相应更新。PowerMock提供了几种有用的反射工具，这些反射工具专门设计用于单元测试。所有这些反射工具都位于`org.powermock.reflect.Whitebox`类中。
 
 出于演示目的，我们假设有一个如下所示的类：
 
@@ -35,7 +35,7 @@ public class ServiceHolder {
 }
 ```
 
-假设我们要测试该`addService`方法（当然可以认为它“太简单了”，但是出于演示目的对其进行测试也足够了）。在这里，我们要确保在调用`addService`方法后，`ServiceHolder`的状态已正确更新。也就是说，新对象已添加到`services`集合中。一种方式是添加一个名为`getServices()`的package-private或protected的方法，该方法返回该`services`集合。但是通过这样做，我们为`ServiceHolder`该类添加了一个方法，该方法除了使该类可测试外没有其他目的。该方法也可能在代码的其他地方被误用。另一种选择是使用PowerMock中的`Whitebox.getInternalState(..)`方法来完成相同的事情而无需更改生产代码。在这种简单情况下，整个`addService`方法的测试如下所示：
+假设我们要测试该`addService`方法（当然可以认为它“太简单了”，但是出于演示目的对其进行测试也足够了）。在这里，我们要确保在调用`addService`方法后，`ServiceHolder`的状态已正确更新。也就是说，新对象已添加到`services`集合中。一种方式是添加一个名为`getServices()`的package-private或protected的方法，该方法返回该`services`集合。但是通过这样做，我们为类`ServiceHolder`添加了一个方法，该方法除了使该类可测试外没有其他目的。该方法也可能在代码的其他地方被误用。另一种选择是使用PowerMock中的`Whitebox.getInternalState(..)`方法来完成相同的事情而无需更改生产代码。在这种简单情况下，整个`addService`方法的测试如下所示：
 
 ```java
 @Test
@@ -61,7 +61,7 @@ public void testAddService() throws Exception {
 ```java
 Set<String> services = Whitebox.getInternalState(tested, Set.class);
 ```
-去获取 `services` 字段. 这是一种获取内部状态的类型安全性更高的方法，也是首选方法。在类`Set`中有多个`Set`类型的字段的情况下，您仍然必须恢复为使用字段名称方法。
+去获取 `services` 字段. 这是一种获取内部状态的类型安全性更高的方法，也是首选方法。在类中有多个`Set`类型的字段的情况下，您仍然必须恢复为使用字段名称方法。
 
 设置对象的内部状态同样容易。举例来说，我们有以下类：
 
@@ -82,7 +82,7 @@ public class ReportGenerator {
 }
 ```
 
-在这里，我们想象我们正在使用一个依赖项注入框架，该框架会在运行时自动为我们提供`ReportTemplateService`实例。我们有很多选择可以测试此类。例如，我们可以重构类以使用构造函数或setter注入，使用java反射，或者我们可以简单地为`reportTemplateService`创建一个setter，该setter*仅*用于测试目的（即，设置模拟实例）。另一种方法是让PowerMock使用`Whitebox.setInternalState(..)`方法为您进行反射。在这种情况下，这真的很容易：
+在这里，我们想象我们正在使用一个依赖项注入框架，该框架会在运行时自动为我们提供`ReportTemplateService`实例。我们有很多选择可以测试此类。例如，我们可以重构类以使用构造函数或setter注入，使用java反射，或者我们可以简单地为`reportTemplateService`创建一个setter，该setter*仅*用于测试目的（即，设置mock模拟实例）。另一种方法是让PowerMock使用`Whitebox.setInternalState(..)`方法为您进行反射。在这种情况下，这真的很容易：
 
 ```java
 Whitebox.setInternalState(tested, "reportTemplateService", reportTemplateServiceMock);
@@ -154,13 +154,13 @@ private int myMethod(Integer id) {
 ...
 ```
 
-这当然是一个幼稚的示例，但是您仍然可以使用`Whitebox.invokeMethod(..)`调用这两种方法。对于这种`myMethod(int id)`情况，您会这样做：
+这当然是一个幼稚的示例，但是您仍然可以使用`Whitebox.invokeMethod(..)`调用这两种方法。对于`myMethod(int id)`这种情况，您会这样做：
 
 ```java
 int result = Whitebox.<Integer> invokeMethod(myInstance, new Class<?>[]{int.class}, "myMethod", 1);
 ```
 
-在这里，我们明确告诉PowerMock期望对`myMethod`带有`int`as参数的调用。但是在大多数情况下，您不需要指定参数类型，因为PowerMock会自动找到正确的方法。
+在这里，我们明确告诉PowerMock期望对`myMethod`带有`int`作为参数的调用。但是在大多数情况下，您不需要指定参数类型，因为PowerMock会自动找到正确的方法。
 
 您还可以调用类级（静态）方法。假设该`sum`方法也是静态的，在这种情况下，我们可以通过以下方式调用它：
 
@@ -236,7 +236,7 @@ PrivateConstructorInstantiationDemo instance = Whitebox.invokeConstructor(Privat
 在这里，我们明确告诉PowerMock期望对采用`Integer`作为参数的构造函数的进行调用。但是在大多数情况下，您不需要指定参数类型，因为PowerMock会自动找到正确的方法。
 
 ### 注意 ###
-所有这些事情都可以在不使用PowerMock的情况下实现，这只是正常的Java反映。但是，反射需要大量样板代码，并且容易出错，因此PowerMock可以为您提供这些实用程序方法。PowerMock使您可以选择是否重构代码并添加用于检查/更改内部状态的getter / setter方法，或者是否使用其工具方法来完成相同的事情而不更改生产代码。由你决定！
+所有这些事情都可以在不使用PowerMock的情况下实现，这只是正常的Java反映。但是，反射需要大量样板代码，并且容易出错，因此PowerMock可以为您提供这些实用程序方法。PowerMock使您可以选择是否重构代码并添加用于检查/更改内部状态的getter/setter方法，或者是否使用其工具方法来完成相同的事情而不更改生产代码。由你决定！
 
 ###  
 

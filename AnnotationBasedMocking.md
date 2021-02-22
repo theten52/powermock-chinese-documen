@@ -1,13 +1,13 @@
-# Annotation-based Mocking #
+# 基于注解的模拟
 
-## Quick summary ##
+## 快速总结 ##
 
-  1. Use `@PowerMockTestListener(AnnotationEnabler.class)` at the class-level of your test to enable the annotation support.
-  1. Use `@Mock` on a field to allow PowerMock to create and inject a mock of the same type as the field.
-  1. Use `@MockNice` on a field to allow PowerMock to create and inject a nice mock of the same type as the fieldprivate constructor.
-  1. Use `@MockStrict` on a field to allow PowerMock to create and inject a strict mock of the same type as the field
-  1. Use `@Mock("methodName")` on a field to allow PowerMock to create and inject a partial mock of the same type as the field mocking only the method called `methodName`. This also work for `@MockNice` and `@MockStrict`.
+  1. 在你的测试的类级别使用 `@PowerMockTestListener(AnnotationEnabler.class)` 以开启注解支持。
+  1. 在字段上使用 `@Mock` 以允许PowerMock创建和注入与该字段相同类型的模拟（类）。
+  1. 在字段上使用 `@MockNice` 以允许PowerMock创建和注入与 fieldprivate？构造函数 相同类型的漂亮模拟类（nice mock）。
+  1. 在字段上使用 `@MockStrict` 以允许PowerMock创建和注入与该字段相同类型的严格模拟类。
+  1. 在字段上使用 `@Mock("methodName")` 以允许PowerMock创建和注入与该字段相同类型的部分模拟，仅模拟`methodName`方法的调用。这也适用于`@MockNice`和`@MockStrict`。
 
-## References ##
+## 参考 ##
 
   * [ServiceHolderTest](https://github.com/powermock/powermock-examples-maven/tree/master/DocumentationExamples/src/test/java/powermock/examples/bypassencapsulation/ServiceHolderTest.java)
