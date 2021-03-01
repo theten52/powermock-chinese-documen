@@ -1,22 +1,22 @@
-# Frequently asked questions #
+# 问和答 #
 
 <ol>
-<li>PowerMockRunner throws a<br>
+<li>PowerMockRunner 抛出<br>
 <pre><code>  java.lang.NoClassDefFoundError: org/junit/internal/runners/BeforeAndAfterRunner<br>
 </code></pre>
-or<br>
+或者<br>
 <pre><code>java.lang.SecurityException: class "org.junit.internal.runners.TestClass"'s signer information does not match signer information of other classes in the same package<br>
 </code></pre>
-exception. What's wrong?
+异常。哪里错了?
+<blockquote>你可使用了一个错误的 PowerMockRunner. 有一个用于JUnit 4.4及更高版本的运行程序，另一个是用于JUnit 4.0-4.3的运行程序（尽管后者也适用于JUnit 4.4的某些较旧的次要版本）。 尝试从 <code>org.powermock.modules.junit4.PowerMockRunner</code> 切换到 <code>org.powermock.modules.junit4.legacy.PowerMockRunner</code>，反之亦然。 查看 <a href='GettingStarted.md'>getting started</a>，了解如何在Maven中进行配置。</li></blockquote>
 
-<blockquote>You're probably using the wrong PowerMockRunner. There's one runner made for JUnit 4.4 and above and a second runner made for JUnit 4.0-4.3 (although the latter also works for some older minor versions of JUnit 4.4). Try switching from the <code>org.powermock.modules.junit4.PowerMockRunner</code> to <code>org.powermock.modules.junit4.legacy.PowerMockRunner</code> or vice versa. Look at the <a href='GettingStarted.md'>getting started</a> guide to see how to configure this in maven.</li></blockquote>
+<li>在Maven中运行PowerMock测试时，Cobertura会给我错误或产生奇怪的结果，我该如何解决呢？<br>
 
-<li>Cobertura gives me errors or produces strange results when running PowerMock tests in Maven, how do I solve this?<br>
-<blockquote>Either:<br>
+<blockquote>使用如下任意一个以解决问题:<br>
 <ol>
-     <li>Upgrade to Cobertura 2.4+ or,<br></li>
-     <li>Follow the instructions on <a href='http://www.jsfblog.info/2010/02/cobertura-code-coverage-with-maven-and-powermock/'>this blog</a> or,<br></li>
-     <li>Add the following to your pom.xml file:<br>
+     <li>升级到Cobertura 2.4+或,<br></li>
+     <li>按照 <a href='http://www.jsfblog.info/2010/02/cobertura-code-coverage-with-maven-and-powermock/'>此博客</a>上的说明进行操作，或者，<br></li>
+     <li>将以下内容添加到您的pom.xml文件中:<br>
          <pre><code>
 &lt;build&gt;<br>
  &lt;plugins&gt;<br>
@@ -30,7 +30,9 @@ exception. What's wrong?
 &lt;/build&gt;<br>
          </code></pre></li>
  </ol></blockquote>
+
 <li>I get a ClassCastException from DocumentBuilderFactory, SaxParserFactory or other XML related classes<br>
+
 <blockquote>The reason is that the XML framework tries to instantiate classes using reflection and does this from the thread context classloader (PowerMock's classloader) but then tries to assign the created object to a field not loaded by the same classloader. When this happens you need to make use of the @PowerMockIgnore annotation to tell PowerMock to defer the loading of a certain package to the system classloader. What you need to ignore is case specific but usually it's the XML framework or some packages that interact with it. E.g. <code>@PowerMockIgnore({"org.xml.*", "javax.xml.*"})</code>. Another option would be to try to bootstrap using our <a href='PowerMockAgent'>Java Agent</a>.<br>
 </blockquote></li>
 
