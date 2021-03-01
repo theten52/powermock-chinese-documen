@@ -1,4 +1,4 @@
-![PowerMock](https://github.com/jayway/powermock/raw/master/powermock.png)
+![PowerMock](https://github.com/powermock/powermock/blob/release/2.x/powermock.png)
 
 * [Getting Started](Getting-Started)
 * [Downloads](Downloads)
