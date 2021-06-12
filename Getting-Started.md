@@ -7,10 +7,10 @@ PowerMock由两个扩展API组成。
 
 当前PowerMock支持JUnit和[TestNG](TestNG)。共有三种不同的JUnit测试执行器，一种用于JUnit 4.4-4.12，一种用于JUnit 4.0-4.3。从PowerMock 2.0开始，不再提供JUnit 3的测试执行器。
 
-有一个TestNG的测试执行器，根据您使用的PowerMock版本，它需要版本5.11+。
+有一个TestNG的测试执行器，根据您使用的PowerMock版本，它需要5.11+版本。
 
 ```
-   Node: Since PowerMock 2.0 Supporting jUnit 3 has been removed.
+   注意: 从 PowerMock 2.0 之后对 jUnit 3 的支持已被移除。
 ```
 
 ## 编写测试 ##
@@ -19,9 +19,9 @@ PowerMock由两个扩展API组成。
 
 ```java
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( { YourClassWithEgStaticMethod.class })
+@PrepareForTest({YourClassWithEgStaticMethod.class})
 public class YourTestCase {
-...
+  ...
 }
 ```
 
@@ -57,13 +57,13 @@ TestNG：下载带有PowerMock及其所有依赖项的[Mockito](https://dl.bintr
 
   * 首先尝试[JUnit委托运行器](JUnit_Delegating_Runner)，如果不起作用，则尝试使用[PowerMockRule](PowerMockRule)或[PowerMock Java代理](PowerMockAgent)。
 
-## 是否需要使用JUnit规则进行引导？
+## 是否需要使用JUnit rule进行引导？
 
-  * 该[PowerMockRule](PowerMockRule)使这种情况发生
+  * [PowerMockRule](PowerMockRule)可以实现这种情况。
 
-## 基于Java代理的引导
+## 基于Java agent的引导
 
-如果你使用PowerMock且具有类加载的问题，使用[PowerMock的Java代理](PowerMockAgent)。
+如果你使用PowerMock且具有类加载的问题，使用[PowerMock的Java Agent](PowerMockAgent)。
 
 ## 需要教程吗？
 
@@ -85,4 +85,4 @@ TestNG：下载带有PowerMock及其所有依赖项的[Mockito](https://dl.bintr
   git checkout powermock-1.7.1
   ```
 
-3.进入`examples/tutorial/`文件夹，并按照[readme.txt](https://raw.githubusercontent.com/powermock/powermock-examples-maven/powermock-1.7.1/examples/tutorial/readme.txt)文件中的说明进行操作。
+3.进入`examples/tutorial/`文件夹，并按照[readme.txt]()文件中的说明进行操作。
