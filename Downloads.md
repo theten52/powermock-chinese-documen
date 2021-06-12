@@ -9,8 +9,8 @@
 | [powermock-easymock-2.0.2-full.jar](https://dl.bintray.com/powermock/generic/org/powermock/powermock-easymock/2.0.2/powermock-easymock-2.0.2-full.jar)  |	PoweMock 2.0.2 with EasyMock API extension (including source but excluding dependencies)  |
 | [powermock-mockito2-2.0.2-full.jar](https://dl.bintray.com/powermock/generic/org/powermock/powermock-mockito2/2.0.2/:powermock-mockito2-2.0.2-full.jar)  |	PoweMock 2.0.2 with Mockito2 API extension (including source but excluding dependencies)  |
 
-### 关于在Mockito中使用1.6.6的注意事项 ###
-在发布过程排除了PowerMockito API中`powermock-api-mockito-common`模块中的文件将会是一个问题。因此，如果下载下面的任何Mockito zip文件，请确保也[下载此文件](http://central.maven.org/maven2/org/powermock/powermock-api-mockito-common/1.6.6/powermock-api-mockito-common-1.6.6.jar)并将其放在您的类路径中。
+### 关于在1.6.6中和Mockito同时使用的注意事项 ###
+发布过程有一个问题，该进程排除了PowerMockito API的`powermock-api-mockito-common`模块中的文件。因此，如果下载下面的任何Mockito zip文件，请确保也[下载此文件](http://central.maven.org/maven2/org/powermock/powermock-api-mockito-common/1.6.6/powermock-api-mockito-common-1.6.6.jar)并将其放在您的类路径中。
 
 ## 旧版
 
