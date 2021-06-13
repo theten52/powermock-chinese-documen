@@ -2,12 +2,12 @@
 
 ## 总览 ##
 
-  1. 在类级别使用 `@RunWith(PowerMockRunner.class)` 注解。
-  1. 在类级别使用 `@MockPolicy(MyMockPolicy.class)` 注解。
+  1. 在类上使用 `@RunWith(PowerMockRunner.class)` 注解。
+  1. 在类上使用 `@MockPolicy(MyMockPolicy.class)` 注解。
 
 ## 示例 ##
 
-可以使用Mock策略使得与PowerMock隔离的某些框架的代码的单元测试变得更容易。Mock策略的实现可以是如抑制某些方法，抑制静态初始化程序或拦截方法调用，并更改某些框架或一组类或接口的返回值（例如，返回模拟对象）。例如，可以实施模拟策略来避免为测试编写重复的设置代码。假设您使用的是框架X，并且要对其进行测试，则要求某些方法应始终返回模拟实现。也许也必须抑制某些静态初始化程序。与其在测试之间复制该代码，不如编写一个可重用的模拟策略。
+可以使用Mock策略使得与PowerMock隔离的某些框架的代码的单元测试变得更容易。Mock策略的实现可以是如抑制某些方法，抑制静态初始化程序或拦截方法调用，并更改某些框架或一组类或接口的返回值（例如，返回模拟对象）。例如，可以实施Mock策略来避免为测试编写重复的设置代码。假设您使用的是框架X，并且要对其进行测试，则要求某些方法应始终返回模拟实现。或许也必须抑制某些静态初始化程序。与其在测试之间复制该代码，不如编写一个可重用的Mock策略。
 
 PowerMock 1.1提供了三种开箱即用的模拟策略，用于模拟slf4j，java common-logging和log4j。让我们以slf4j为例，假设您有一个看起来像这样的类：
 
@@ -60,7 +60,7 @@ public class Slf4jUserTest {
 ```
 请注意，我们根本不需要进行任何设置来模拟slf4j，`Slf4jMockPolicy`会注意这一点。
 
-模拟策略也可以像这样链接或嵌套：
+Mock策略也可以像这样链接或嵌套：
 
 ```java
 @RunWith(PowerMockRunner.class)
@@ -70,7 +70,7 @@ public class MyTest {
 }
 ```
 
-请注意，链中的后续模拟策略可以覆盖先前策略的行为。在此示例中，这意味着`MockPolicyY`可能会覆盖由`MockPolicyX`定义的行为。如果编写自定义模拟策略，请务必牢记这一点。
+请注意，链中的后续Mock策略可以覆盖先前策略的行为。在此示例中，这意味着`MockPolicyY`可能会覆盖由`MockPolicyX`定义的行为。如果编写自定义模拟策略，请务必牢记这一点。
 
 ## 创建自定义Mock策略
 
@@ -79,7 +79,7 @@ public class MyTest {
 ```java
 void applyClassLoadingPolicy(MockPolicyClassLoadingSettings settings);
 ```
-and
+和
 
 ```java
 void applyInterceptionPolicy(MockPolicyInterceptionSettings settings);
@@ -104,7 +104,7 @@ public class Dependency {
 	}
 }
 ```
-假设我们想在每次调用`getData`该方法时都返回一个`DataObject`自定义，即我们要拦截`getData`对它的调用并使它返回我们的自定义对象。为了创建一个可重用的Mock策略来做到这一点，我们首先创建一个实现`org.powermock.core.spi.PowerMockPolicy`接口的新类`MyCustomMockPolicy`。完整的代码如下所示：
+假设我们想在每次调用`getData`该方法时都返回一个自定义`DataObject`，即我们要拦截`getData`对它的调用并使它返回我们的自定义对象。为了创建一个可重用的Mock策略来做到这一点，我们首先创建一个实现`org.powermock.core.spi.PowerMockPolicy`接口的新类`MyCustomMockPolicy`。完整的代码如下所示：
 
 ```java
 public class MyCustomMockPolicy implements PowerMockPolicy {
@@ -129,7 +129,7 @@ public class MyCustomMockPolicy implements PowerMockPolicy {
 }
 ```
 
-让我们更详细地解释它。由于我们要拦截`Dependency`类的`getData()`方法调用，因此必须通过让Mock类加载器加载这个类来为测试做准备。因此，我们通过传递`Dependency`类的完全限定名称来从`applyClassLoadingPolicy`方法中调用`settings.addFullyQualifiedNamesOfClassesToLoadByMockClassloader(..)`方法，从而告诉PowerMock这样做。如果我们愿意，也可以在此处传递包名称，若我们希望特定类包（和子包）中的所有类都由Mock类加载器加载。在下一步中，我们告诉PowerMock进行实际的拦截。首先，使用`Whitebox.getMethod(..)`来获取要拦截的方法（在本例中为getData方法）。然后，创建我们希望返回的自定义DataObject，然后通过调用`settings.addSubtituteReturnValue(..)`方法指示PowerMock返回此对象，而已！
+让我们更详细地解释它。由于我们要拦截`Dependency`类的`getData()`方法调用，因此必须通过让Mock类加载器加载这个类来为测试做准备。因此，我们通过传递`Dependency`类的完全限定名称来从`applyClassLoadingPolicy`方法中调用`settings.addFullyQualifiedNamesOfClassesToLoadByMockClassloader(..)`方法，从而告诉PowerMock这样做。如果我们愿意，也可以在此处传递包名称，当我们希望特定类包（和子包）中的所有类都由Mock类加载器加载时。在下一步中，我们告诉PowerMock进行实际的拦截。首先，使用`Whitebox.getMethod(..)`来获取要拦截的方法（在本例中为getData方法）。然后，创建我们希望返回的自定义DataObject，然后通过调用`settings.addSubtituteReturnValue(..)`方法指示PowerMock返回此对象，而已！
 
 假设我们有一个实际上使用我们的依赖关系的类，如下所示：
 
@@ -157,7 +157,7 @@ public class DependencyUserTest {
 }
 ```
 
-如果未应用模拟策略，`dependencyData.getData()`则将返回"some data"。
+如果未应用Mock策略，`dependencyData.getData()`则将返回"some data"。
 
 ## 参考 ##
   * [MyCustomMockPolicy](https://github.com/powermock/powermock-examples-maven/blob/master//DocumentationExamples/src/main/java/powermock/examples/mockpolicy/policy/MyCustomMockPolicy.java)
