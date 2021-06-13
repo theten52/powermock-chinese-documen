@@ -26,9 +26,9 @@
 1. [Mockito 1.7](Mockito-Usage-Legacy)
 
 ## 介绍 ##
-事实上，PowerMock提供了一个名为“PowerMockito”的类，用于创建mock/对象/类并启动验证和期望（一个行为/调用或者返回值），您仍然可以使用Mockito设置和验证期望的所有其他内容（例如times()，anyInt()）。
+事实上，PowerMock提供了一个名为“PowerMockito”的类，用于创建mock/对象/类并开始验证和期望（一个行为/调用或者返回值），您仍然可以使用Mockito设置和验证期望的所有其他内容（例如times()，anyInt()）。
 
-所有的用法需要`@RunWith(PowerMockRunner.class)`，并在类级别标识`@PrepareForTest`注解。
+所有的用法需要`@RunWith(PowerMockRunner.class)`，并在类上标识`@PrepareForTest`注解。
 
 ## 支持版本 ##
 
@@ -75,9 +75,9 @@ PowerMock 1.7.0及更高版本具有Mockito 2的实验性支持。
 注意：Mockito团队在Mockito 2.1.0中增加了模拟[final类/方法](https://github.com/mockito/mockito/wiki/What's-new-in-Mockito-2#mock-the-unmockable-opt-in-mocking-of-final-classesmethods)的能力。自PowerMock 1.7.0（经过Mockito 2.8.9测试）以来，PowerMock支持此功能。可以使用[PowerMock Configuration](#mockito-mock-maker-inline)启用该功能。如果使用Mockito 2，建议使用Mockito模拟final方法/类。
 
 ### Mock静态方法 ###
-如何模拟和存根（stub）：
+如何模拟（mock）和存根（stub）：
 
-1. 在类级别添加 `@PrepareForTest`。
+1. 在类上添加 `@PrepareForTest`。
 
   ```java
   @PrepareForTest(Static.class) // Static.class contains static methods
@@ -105,7 +105,7 @@ PowerMockito.verifyStatic(Static.class); // 1
 Static.firstStaticMethod(param); // 2
 ```
 
-重要提示：您需要按方法调用`verifyStatic(Static.class)`验证。
+重要提示：您需要按方法逐个调用`verifyStatic(Static.class)`验证。
 
 #### 如何使用参数匹配器
 
@@ -118,20 +118,20 @@ Static.thirdStaticMethod(Mockito.anyInt());
 
 #### 如何验证确切的调用次数
 
-您仍然可以将Mockito.VerificationMode（例如Mockito.times（x））与`PowerMockito.verifyStatic(Static.class, Mockito.times(2))`结合使用：
+您仍然可以将Mockito.VerificationMode（例如Mockito.times(x)）与`PowerMockito.verifyStatic(Static.class, Mockito.times(2))`结合使用：
 
 ```java
 PowerMockito.verifyStatic(Static.class, Mockito.times(1));
 ```
 
 #### 如何将静态void方法存根以引发异常 ####
-如果不是private方法:
+如果不是私有方法:
 
 ```java
 PowerMockito.doThrow(new ArrayStoreException("Mock error")).when(StaticService.class);
 StaticService.executeMethod();
 ```
-请注意，您可以对final类/方法执行相同的操作：
+请注意，您可以对final类/final方法执行相同的操作：
 
 ```java
 PowerMockito.doThrow(new ArrayStoreException("Mock error")).when(myFinalMock).myFinalMethod();
@@ -181,7 +181,7 @@ public class YourTestCase {
 ```
 
 ### 部分Mock ###
-您可以使用PowerMockito部分mock方法通过使用PowerMockito.spy。请小心（以下内容取自Mockito文档，同样适用于PowerMockito）：
+您可以通过使用PowerMockito的PowerMockito.spy部分mock方法。请小心（以下内容取自Mockito文档，同样适用于PowerMockito）：
 
 有时，无法使用标准`when(..)`方法对spy()进行打桩（stubbing，存根）。例如：
 
@@ -219,7 +219,7 @@ verifyPrivate(tested).invoke("privateMethodName", argument1);
 ```java
 whenNew(MyClass.class).withNoArguments().thenThrow(new IOException("error message"));
 ```
-请注意，您必须准备在测试过程中的用于*创建*`MyClass`新实例中的类，而不是其`MyClass`本身。例如，如果正在执行的类`new MyClass()`称为X，则必须先进行操作`@PrepareForTest(X.class)`才能使`whenNew`工作：
+请注意，您必须准备在测试过程中的用于*创建*`MyClass`新实例中的类，而不是其`MyClass`本身。例如，如果正在执行的类称为X，则必须先进行操作`@PrepareForTest(X.class)`才能使`whenNew`工作：
 
 ```java
 @RunWith(PowerMockRunner.class)
@@ -276,7 +276,7 @@ public class YourTestCase {
 }
 ```
 
-### 私有方法的部分模拟的完整示例 ###
+### 私有方法部分mock的完整示例 ###
 （在PowerMock版本1.3.6+中可用）
 
 ```java
