@@ -1,10 +1,10 @@
 # Using @PowerMockRunnerDelegate  #
 
-```
-   Feature avaliable since PowerMock 1.6.0
+```text
+   功能从PowerMock 1.6.0可用
 ```
 
-Since version 1.6.0 PowerMock has support for delegating the test execution to another JUnit runner without using a JUnit Rule. This leaves the actual test-execution to another runner of your choice. For example tests can delegate to "SpringJUnit4ClassRunner", "Parameterized" or the "Enclosed" runner. Usage example:
+从PowerMock 1.6.0版本以来，支持将测试执行委托给另一个JUnit runner而不使用JUnit Rule. 这将实际的测试执行留给您选择的另一个runner。 例如，测试可以委托给“SpringJunit4ClassRunner”，“Parameterized”或“Enclosed”runner。 用法示例：
 
 ```java
 @RunWith(PowerMockRunner.class)
@@ -40,6 +40,6 @@ public class FinalDemoTest {
 ```
 
 
-## References ##
+## 参考 ##
 
  * [Jayway Blog: Using another JUnit runner with PowerMock](http://www.jayway.com/2014/11/29/using-another-junit-runner-with-powermock)
