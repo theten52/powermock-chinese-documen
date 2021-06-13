@@ -2,11 +2,11 @@
 
 ## 总览 ##
   1. 在测试用例的类上使用 `@RunWith(PowerMockRunner.class)`注解.
-  1. 在测试用例的类级别结合使用`@PrepareForTest(ClassWithEvilParentConstructor.class)`和`suppress(constructor(EvilParent.class))`注解，以禁止调用EvilParent类的所有构造函数。
+  1. 在测试用例的类上结合使用`@PrepareForTest(ClassWithEvilParentConstructor.class)`和`suppress(constructor(EvilParent.class))`注解，以禁止调用EvilParent类的所有构造函数。
   1. 使用`Whitebox.newInstance(ClassWithEvilConstructor.class)` 方法去实例化一个类而无须调用其构造函数。
   1. 使用`@SuppressStaticInitializationFor("org.mycompany.ClassWithEvilStaticInitializer")`注解移除类`org.mycompany.ClassWithEvilStaticInitializer`的静态初始化器。
-  1. 在类级别使用 `@PrepareForTest(ClassWithEvilMethod.class)` 注解结合`suppress(method(ClassWithEvilMethod.class, "methodName"))` 去抑制类ClassWithEvilMethod中的 "methodName" 方法。
-  1. 在类级别使用 `@PrepareForTest(ClassWithEvilField.class)` 注解结合 `suppress(field(ClassWithEvilField.class, "fieldName"))` 去抑制类 ClassWithEvilField 中的"fieldName" 字段.
+  1. 在类上使用 `@PrepareForTest(ClassWithEvilMethod.class)` 注解结合`suppress(method(ClassWithEvilMethod.class, "methodName"))` 去抑制类ClassWithEvilMethod中的 "methodName" 方法。
+  1. 在类上使用 `@PrepareForTest(ClassWithEvilField.class)` 注解结合 `suppress(field(ClassWithEvilField.class, "fieldName"))` 去抑制类 ClassWithEvilField 中的"fieldName" 字段.
 
 您可以在此处找到成员修改和成员匹配器方法：
   * `org.powermock.api.support.membermodification.MemberModifier`
@@ -152,7 +152,6 @@ public class ExampleWithEvilMethodTest {
 	public void testSuppressMethod() throws Exception {
 		suppress(method(ExampleWithEvilMethod.class, "getEvilMessage"));
 		final String message = "myMessage";
-    //TODO 如何返回一个getEvilMessage方法的非默认值？
 		ExampleWithEvilMethod tested = new ExampleWithEvilMethod(message);
 		assertEquals(message, tested.getMessage());
 	}
@@ -203,14 +202,11 @@ public class ExampleWithEvilStaticInitializerTest {
 ```
 
 ### 抑制字段 ###
-You can also suppress fields using `suppress(..)`. For example let's say you have to following class:
-
 您也可以使用`suppress(..)`抑制字段。例如，假设您有以下类：
 
 ```java
 public class MyClass {
 	private MyObject myObject = new MyObject();
-
 
 	public MyObject getMyObject() {
 		return myObject;
@@ -218,15 +214,11 @@ public class MyClass {
 }
 ```
 
-To suppress the `myObject` field above you can do:
-
 要抑制上面的`myObject`字段，您可以执行以下操作：
 
 ```java
 suppress(field(MyClass.class, "myObject"));
 ```
-Invoking the `getMyObject()` will then return `null` for every instance of `MyClass` when it has been prepared for test.
-
 调用`getMyObject()`之后，将为准备进行测试的每个`MyClass`实例返回`null`。
 
 ## References ##
