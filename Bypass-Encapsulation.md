@@ -16,7 +16,7 @@
 ## 示例 ##
 
 ### 访问内部状态 ###
-对于可变对象，在调用方法后内部状态可能会更改。在对此类对象进行单元测试时，最好有一种简单的方法来保持此状态并查看其是否已相应更新。PowerMock提供了几种有用的反射工具，这些反射工具专门设计用于单元测试。所有这些反射工具都位于`org.powermock.reflect.Whitebox`类中。
+对于可变对象，在调用方法后内部状态可能会更改。在对此类对象进行单元测试时，最好有一种简单的方法来保持此状态并查看其是否已产生了相应的更新。PowerMock提供了几种有用的反射工具，这些反射工具专门设计用于单元测试。所有这些反射工具都位于`org.powermock.reflect.Whitebox`类中。
 
 出于演示目的，我们假设有一个如下所示的类：
 
@@ -95,7 +95,7 @@ Whitebox.setInternalState(tested, reportTemplateServiceMock);
 ```
 这是首选方法，因为它对重构更友好。如果您的类中有多个`ReportTemplateService`类型的字段，则可能仍必须恢复为字段名方法。
 
-我们刚刚看到的set和get内部状态方法也有一些更高级的用例。很多时候，修改或读取对象的类层次结构中的内部状态很有用。通常，setInternalState和getInternalState遍历超类层次结构，以在子类中查找字段，然后返回或设置与提供的字段名称匹配的第一个字段。但是在某些情况下，您确实希望获取或设置层次结构中某个位置的特定字段。例如，假设我们有一个扩展了B的类A的实例，并且A和B都有一个名为`myPrivateString`的`java.lang.String`类型的字段，但是在这种情况下，我们想读取B的字段的内容。通过使用`Whitebox.getInternalState(..)`我们可以通过指定应从类层次结构中读取字段的位置来轻松实现此目的。在这种情况下，我们将编写如下内容：
+我们刚刚看到的set和get内部状态方法也有一些更高级的用例。很多时候，修改或读取对象的类层次结构中的内部状态很有用。通常，setInternalState和getInternalState遍历超类层次结构，以在子类中查找字段，然后返回或设置与提供的字段名称匹配的第一个字段。但是在某些情况下，您确实希望获取或设置层次结构中某个位置的特定字段。例如，假设我们有一个扩展了类B的类A的实例，并且A和B都有一个名为`myPrivateString`的`java.lang.String`类型的字段，但是在这种情况下，我们想读取B的字段的内容。通过使用`Whitebox.getInternalState(..)`我们可以通过指定应从类层次结构中读取字段的位置来轻松实现此目的。在这种情况下，我们将编写如下内容：
 
 ```java
 String myPrivateString = Whitebox.<String> getInternalState(instanceOfA, "myPrivateString", B.class);
@@ -236,7 +236,7 @@ PrivateConstructorInstantiationDemo instance = Whitebox.invokeConstructor(Privat
 在这里，我们明确告诉PowerMock期望对采用`Integer`作为参数的构造函数的进行调用。但是在大多数情况下，您不需要指定参数类型，因为PowerMock会自动找到正确的方法。
 
 ### 注意 ###
-所有这些事情都可以在不使用PowerMock的情况下实现，这只是正常的Java反映。但是，反射需要大量样板代码，并且容易出错，因此PowerMock可以为您提供这些实用程序方法。PowerMock使您可以选择是否重构代码并添加用于检查/更改内部状态的getter/setter方法，或者是否使用其工具方法来完成相同的事情而不更改生产代码。由你决定！
+所有这些事情都可以在不使用PowerMock的情况下实现，这只是正常的Java反射。但是，反射需要大量样板代码，并且容易出错，因此PowerMock可以为您提供这些实用程序方法。PowerMock使您可以选择是否重构代码并添加用于检查/更改内部状态的getter/setter方法，或者是否使用其工具方法来完成相同的事情而不更改生产代码。由你决定！
 
 ###  
 
