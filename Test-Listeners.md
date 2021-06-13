@@ -2,8 +2,8 @@
 
 ## 总览 ##
 
-  1. 在类级别使用 `@RunWith(PowerMockRunner.class)` 注解。
-  1. 在类级别使用 `@PowerMockListener({Listener1.class, Listener2.class})` 注解。
+  1. 在类上使用 `@RunWith(PowerMockRunner.class)` 注解。
+  1. 在类上使用 `@PowerMockListener({Listener1.class, Listener2.class})` 注解。
 
 ## 示例 ##
 
@@ -18,19 +18,19 @@ PowerMock 1.1及更高版本具有测试侦听器的概念。测试侦听器可�
 ```java
 @RunWith(PowerMockRunner.class)
 @PowerMockListener(AnnotationEnabler.class)
- public class PersonServiceTest {
+public class PersonServiceTest {
 
- 	@Mock
-  	private PersonDao personDaoMock;
+    @Mock
+    private PersonDao personDaoMock;
 
-  	private PersonService classUnderTest;
+    private PersonService classUnderTest;
 
-  	@Before
-  	public void setUp() {
-  		classUnderTest = new PersonService(personDaoMock);
-  	}
-   ...
-  }
+    @Before
+    public void setUp() {
+        classUnderTest = new PersonService(personDaoMock);
+    }
+    ...
+}
 ```
 
 使用@Mock注解消除了手动设置和拆卸模拟的需要，从而最大程度地减少了重复的测试代码并使测试更具可读性。AnnotationEnabler适用于EasyMock和Mockito API。在EasyMock版本中，如果要创建部分模拟，还可以提供希望模拟的方法的名称，例如：
@@ -38,26 +38,26 @@ PowerMock 1.1及更高版本具有测试侦听器的概念。测试侦听器可�
 ```java
 @RunWith(PowerMockRunner.class)
 @PowerMockListener(AnnotationEnabler.class)
- public class PersonServiceTest {
+public class PersonServiceTest {
 
- 	@Mock("getPerson")
-  	private PersonDao personDaoMock;
+    @Mock("getPerson")
+    private PersonDao personDaoMock;
 
-  	private PersonService classUnderTest;
+    private PersonService classUnderTest;
 
-  	@Before
-  	public void setUp() {
-  		classUnderTest = new PersonService(personDaoMock);
-  	}
-   ...
-  }
+    @Before
+    public void setUp() {
+        classUnderTest = new PersonService(personDaoMock);
+    }
+    ...
+}
 ```
 这段代码将指示PowerMock创建`PersonDao`且仅模拟“getPerson”方法的部分模拟。由于EasyMock支持良好且严格的Mock，因此您可以使用`@MockNice`和`@MockStrict`注解来获得此好处。
 
 在Mockito中，您只需使用`spy(..)`部分模拟类或实例即可。
 
 ### FieldDefaulter ###
-此测试侦听器实现可用于在每次测试后为junit测试中的每个成员字段设置默认值。对于许多开发人员来说，使用JUnit时，创建一个tearDown方法并清空所有引用几乎是一个标准过程（您可以[在此处](http://blogs.atlassian.com/developer/2005/12/reducing_junit_memory_usage.html)阅读有关此问题的更多信息）。但是，可以使用FieldDefaulter自动完成此操作。举例来说，假设您有5个要在测试中模拟的协作者，并且要确保在每次测试后将每个协作者都设置为null，以允许对其进行垃圾回收。因此，与其做：
+此测试侦听器实现可用于在每次测试后为junit测试中的每个成员字段设置默认值。对于许多开发人员来说，使用JUnit时，创建一个tearDown方法并清空所有引用几乎是一个标准过程（您可以[在此处](http://blogs.atlassian.com/developer/2005/12/reducing_junit_memory_usage.html)阅读有关此问题的更多信息）。但是，也可以使用FieldDefaulter自动完成此操作。举例来说，假设您有5个要在测试中模拟的协作者，并且要确保在每次测试后将每个协作者都设置为null，以允许对其进行垃圾回收。因此，与其做：
 
 ```java
 @RunWith(PowerMockRunner.class)
