@@ -181,17 +181,15 @@ public class YourTestCase {
 ```
 
 ### 部分Mock ###
-您可以通过使用PowerMockito的PowerMockito.spy部分mock方法。请小心（以下内容取自Mockito文档，同样适用于PowerMockito）：
-
-有时，无法使用标准`when(..)`方法对spy()进行打桩（stubbing，存根）。例如：
+您可以通过使用PowerMockito的PowerMockito.spy部分mock方法。请注意（以下内容取自Mockito文档，同样适用于PowerMockito）：有时，无法使用标准`when(..)`方法对spy()进行打桩（stubbing，存根）。例如：
 
 ```java
 List list = new LinkedList();
 List spy = spy(list);
-//Impossible: real method is called so spy.get(0) throws IndexOutOfBoundsException (the list is yet empty)
-when(spy.get(0)).thenReturn("foo");
+//这样是不行的:真正的方法spy.get(0)会被调用并抛出IndexOutOfBoundsException异常（这个list仍然是空的）
+//when(spy.get(0)).thenReturn("foo");
 
-//You have to use doReturn() for stubbing
+//你需要用 doReturn() 去打桩
 doReturn("foo").when(spy).get(0);
 ```
 
