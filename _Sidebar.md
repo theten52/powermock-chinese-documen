@@ -21,3 +21,4 @@
 * [问与答](FAQ)
 * [支持](http://groups.google.com/group/powermock)
 * [贡献者](Contributors)
+* [Mockito 文档](Mockito-Doc)
