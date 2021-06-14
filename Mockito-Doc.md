@@ -72,9 +72,7 @@ System.out.println(mockedList.get(999));
 
 Mockito 库允许创建mock对象，验证方法代用和存根方法调用。
 
-### 基础功能
-
-#### 验证mock对象的行为（方法是否被调用以及调用返回值）
+### 1.验证mock对象的行为（方法是否被调用以及调用返回值）
 
 ```java
  //让我们静态导入Mockito是我们的代码看起来更干净一点
@@ -92,7 +90,7 @@ Mockito 库允许创建mock对象，验证方法代用和存根方法调用。
  verify(mockedList).clear();
 ```
 
-#### 添加一些存根（stub）：指定mock对象方法调用的返回值
+### 2.添加一些存根（stub）：指定mock对象方法调用的返回值
 
 ```java
  //你可以mock具体的类，而不仅仅是接口
@@ -169,7 +167,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
 
 匹配器方法如`anyObject()`，`eq()` **不会**返回匹配器。在内部，它们在堆栈上记录一个匹配器并返回一个虚拟值（通常为空）。此实现是由于 java 编译器强加的静态类型安全。结果是您不能在验证/存根之外的方法使用`anyObject()`,`eq()`方法。
 
-#### 验证确切的调用次数/至少调用x次/从未调用
+### 4.验证确切的调用次数/至少调用x次/从未调用
 
 ```java
  //使用mock对象
@@ -393,8 +391,6 @@ public class ArticleManagerTest {
  
 ```
 
-
-
 您可以使用`doThrow()`，`doAnswer()`，`doNothing()`，`doReturn()` 和`doCallRealMethod()`在与`when()`相应的地方，对于任何方法。当你有必要
 
 - 存根void方法
@@ -417,78 +413,56 @@ public class ArticleManagerTest {
 
 [`doCallRealMethod()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#doCallRealMethod--)
 
-### 13.[监视真实物体](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy)
+### 13.[监视真实对象：使用spy](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy)
 
 您可以创建真实对象的间谍。当您使用 spy 时，将调用**真正的**方法（除非方法被存根）。
 
 真正的间谍应该**谨慎**使用**，偶尔使用**，例如在处理遗留代码时。
 
-对真实对象的监视可以与“部分模拟”概念相关联。 **在 1.8 版本之前**，Mockito 间谍并不是真正的部分模拟。原因是我们认为部分模拟是一种代码味道。在某些时候，我们发现了部分模拟的合法用例（第 3 方接口，遗留代码的临时重构）。
+对真实对象的监视可以与“部分模拟”概念相关联。 **在 1.8 版本之前**，Mockito 间谍并不是真正的部分模拟。原因是我们认为部分模拟是一种代码异味。在某些时候，我们发现了部分模拟的合法用例（第 3 方接口，遗留代码的临时重构）。
 
 
 
-```
+```java
    List list = new LinkedList();
    List spy = spy(list);
 
-   //optionally, you can stub out some methods:
+   //你可以存根一些方法:
    when(spy.size()).thenReturn(100);
 
-   //using the spy calls *real* methods
+   //使用spy调用真实的方法
    spy.add("one");
    spy.add("two");
 
-   //prints "one" - the first element of a list
+   //输出 "one" - list的第一个元素
    System.out.println(spy.get(0));
 
-   //size() method was stubbed - 100 is printed
+   //size() 方法已被存根 - 输出 100
    System.out.println(spy.size());
 
-   //optionally, you can verify
+   //你也可以进行验证
    verify(spy).add("one");
    verify(spy).add("two");
  
 ```
 
-#### 监视真实物体的重要问题！
+#### 监视真实对象的重要问题！
 
-1. 有时它是不可能或不切实际的
+1. 有时将`when(Object)`用于已经存根的spy对象是不可能或不切实际的。因此在使用间谍时请考虑`doReturn`|`Answer`|`Throw()`存根方法族。例子：
 
-   `when(Object)`
-
-   用于 stubing 间谍。因此在使用间谍时请考虑
-
-   ```
-   doReturn
-   ```
-
-   | 
-
-   ```
-   Answer
-   ```
-
-   | 
-
-   ```
-   Throw()
-   ```
-
-   存根方法系列。例子：
-
-   ```
+   ```java
       List list = new LinkedList();
       List spy = spy(list);
    
-      //Impossible: real method is called so spy.get(0) throws IndexOutOfBoundsException (the list is yet empty)
+      //以下代码是不可能: 真正的函数会被调用，spy.get(0) 会抛出 IndexOutOfBoundsException (list仍然是空的)
       when(spy.get(0)).thenReturn("foo");
    
-      //You have to use doReturn() for stubbing
+      //你需要用 doReturn() 去存根
       doReturn("foo").when(spy).get(0);
     
    ```
 
-2. Mockito ***不会\***将调用委托给传递的真实实例，而是实际上创建了它的副本。因此，如果您保留真实实例并与之交互，则不要指望被监视的人会知道这些交互及其对真实实例状态的影响。推论是，当***unstubbed\***方法在*** 间谍\* 上**调用但*** 不在真实实例上\* 时**，您将看不到对真实实例的任何影响。
+2. Mockito **不会**将调用委托传递给的真实实例，而是实际上创建了它的副本。因此，如果您保留真实实例并与之交互，则不要指望被监视的人会知道这些交互及其对真实实例状态的影响。相应的，当**unstubbed**（没有进行存根）的方法在**spy对象上**调用但**不在真实实例上时**，您将看不到对真实实例的任何影响。
 
 3. 注意最后的方法。Mockito 不模拟 final 方法，所以底线是：当您监视真实对象时 + 尝试存根 final 方法 = 麻烦。您也将无法验证这些方法。
 
@@ -496,9 +470,9 @@ public class ArticleManagerTest {
 
 您可以为其返回值创建具有指定策略的模拟。这是一项非常高级的功能，通常您不需要它来编写像样的测试。但是，它对于处理**遗留系统**很有帮助。
 
-它是默认答案，因此**仅当您不**存根方法调用**时**才会使用它。
+它是默认返回，因此**仅当您**在非存根方法**调用时**才会使用它。
 
-```
+```java
    Foo mock = mock(Foo.class, Mockito.RETURNS_SMART_NULLS);
    Foo mockTwo = mock(Foo.class, new YourOwnAnswer());
  
@@ -508,16 +482,16 @@ public class ArticleManagerTest {
 
 ### 15.为进一步的断言[捕获参数](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captors)（自 1.8.0 起）
 
-Mockito 以自然的 Java 风格验证参数值：通过使用`equals()`方法。这也是推荐的匹配参数的方式，因为它使测试变得干净和简单。但在某些情况下，在实际验证之后对某些论点进行断言是有帮助的。例如：
+Mockito 以自然的 Java 风格验证参数值：通过使用`equals()`方法。这也是推荐的匹配参数的方式，因为它使测试变得干净和简单。但在某些情况下，它对某些参数进行断言是有帮助的。例如：
 
-```
+```java
    ArgumentCaptor<Person> argument = ArgumentCaptor.forClass(Person.class);
    verify(mock).doSomething(argument.capture());
    assertEquals("John", argument.getValue().getName());
  
 ```
 
-**警告：**建议将 ArgumentCaptor 与验证一起使用，**但不要**与存根一起使用。使用带有存根的 ArgumentCaptor 可能会降低测试的可读性，因为 captor 是在断言（又名验证或“then”）块之外创建的。它还可以减少缺陷定位，因为如果未调用存根方法，则不会捕获任何参数。
+**警告：**建议将 ArgumentCaptor 与验证一起使用，**但不要**与存根一起使用。使用带有存根的 ArgumentCaptor 可能会降低测试的可读性，因为 captor 是在断言（又名验证或“then”）块之外创建的。它还会缺陷定位，因为如果未调用存根方法，则不会捕获任何参数。
 
 在某种程度上 ArgumentCaptor 与自定义参数匹配器有关（请参阅[`ArgumentMatcher`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatcher.html)类的javadoc ）。这两种技术都可用于确保将某些参数传递给模拟。但是，在以下情况下，ArgumentCaptor 可能更适合：
 
