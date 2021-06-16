@@ -725,26 +725,26 @@ Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户�
 
 有关更多信息，请参阅[`MockingDetails`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockingDetails.html).
 
-### 27.[将调用委托给真实实例](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#delegating_call_to_real_instance)（自 1.9.5 起）
+### 27.[将调用委托给真实对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#delegating_call_to_real_instance)（自 1.9.5 起）
 
-对于使用通常的间谍 API**难以mock或监视**的对象的间谍或部分**mock**很有用。从 Mockito 1.10.11 开始，委托可能与mock的类型相同，也可能不同。如果类型不同，则需要在委托类型上找到匹配的方法，否则抛出异常。此功能的可能用例：
+对于使用一般的spy API**难以mock或监视**的对象，可以使用其spy或部分**mock**。从 Mockito 1.10.11 开始，委托可能与mock的类型相同，也可能不同。如果类型不同，则需要在委托类型上找到匹配的方法，否则抛出异常。此功能的可能用例：
 
-- 最终类但带有接口
+- Final类但带有接口
 - 已经自定义代理对象
-- 具有终结方法的特殊对象，即避免执行 2 次
+- 具有finalize方法的特殊对象，即避免执行 2 次
 
-与普通间谍的区别：
+与普通spy的区别：
 
-- 常规 spy ( [`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)) 包含来自被监视实例的**所有**状态，并且在 spy 上调用方法。被监视的实例仅用于mock创建以从中复制状态。如果您调用常规 spy 上的方法，并且它在内部调用此 spy 上的其他方法，则这些调用会被记住以进行验证，并且可以有效地将它们存根。
-- 委托的mock只是将所有方法委托给委托。委托一直在使用，因为方法被委托给它。如果您在委托的mock上调用方法，并且它在内部调用此mock上的其他方法，则**不会**记住这些调用以进行验证，存根也不会对它们产生影响。Mock 委托的功能不如常规 spy 强大，但在无法创建常规 spy 时很有用。
+- 常规 spy ( [`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)) 包含来自被监视实例的**所有**状态和被调用方法。被监视的实例仅用于mock创建以从中复制状态。如果您调用常规 spy 上的方法，并且它在内部调用此 spy 上的其他方法，则这些调用会被记住以进行验证，并且可以有效地将它们存根。
+- 委托的mock只是将所有方法委托给委托类。委托类一直在使用，因为方法被委托给它。如果您在委托类的mock上调用方法，并且它在内部调用此mock上的其他方法，则**不会**记住这些调用以进行验证，存根也不会对它们产生影响。Mock 委托的功能不如常规 spy 强大，但在无法创建常规 spy 时很有用。
 
-在文档中查看更多信息[`AdditionalAnswers.delegatesTo(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/AdditionalAnswers.html#delegatesTo-java.lang.Object-)。
+在[`AdditionalAnswers.delegatesTo(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/AdditionalAnswers.html#delegatesTo-java.lang.Object-)文档中查看更多信息。
 
 ### 28. [`MockMaker`API](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_maker_plugin)（从 1.9.5 开始）
 
-在谷歌 Android 人员的要求和补丁的驱动下，Mockito 现在提供了一个扩展点，允许替换代理生成引擎。默认情况下，Mockito 使用[Byte Buddy](https://github.com/raphw/byte-buddy) 创建动态代理。
+在谷歌 Android 人员的要求和补丁的驱动下，Mockito 现在提供了一个扩展点，允许替换`代理生成引擎`。默认情况下，Mockito 使用[Byte Buddy](https://github.com/raphw/byte-buddy) 创建动态代理。
 
-扩展点适用于想要扩展 Mockito 的高级用户。例如，现在可以使用针对的Mockito Android版的帮助测试[dexmaker](https://github.com/crittercism/dexmaker)。
+扩展点适用于想要扩展 Mockito 的高级用户。例如，现在可以使用针对的Mockito Android版的[dexmaker](https://github.com/crittercism/dexmaker)帮助测试。
 
 有关更多详细信息、动机和示例，请参阅[`MockMaker`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/MockMaker.html).
 
@@ -766,26 +766,26 @@ Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户�
 
 ### 30.[监视或mock抽象类（自 1.10.12 起，在 2.7.13 和 2.7.14 中进一步增强）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spying_abstract_classes)
 
-现在可以方便地监视抽象类。请注意，过度使用 spies 暗示了代码设计的味道（请参阅 参考资料[`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)）。
+现在可以方便地监视抽象类。请注意，过度使用 spies 暗示了代码设计的异味（请参阅 参考资料[`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)）。
 
 以前，只能对对象实例进行监视。新的 API 使得在创建mock实例时使用构造函数成为可能。这对于mock抽象类特别有用，因为用户不再需要提供抽象类的实例。目前只支持无参数构造函数，如果还不够，请告诉我们。
 
-```
- //convenience API, new overloaded spy() method:
+```java
+ //便利的 API, 新重载的 spy() 方法:
  SomeAbstract spy = spy(SomeAbstract.class);
 
- //Mocking abstract methods, spying default methods of an interface (only available since 2.7.13)
+ //Mocking 抽象, spy 接口的默认方法(从2.7.13可用)
  Function function = spy(Function.class);
 
- //Robust API, via settings builder:
+ //健壮的 API, 来自 settings builder:
  OtherAbstract spy = mock(OtherAbstract.class, withSettings()
     .useConstructor().defaultAnswer(CALLS_REAL_METHODS));
 
- //Mocking an abstract class with constructor arguments (only available since 2.7.14)
+ //Mock一个抽象类，使用构造函数(从 2.7.14 可用)
  SomeAbstract spy = mock(SomeAbstract.class, withSettings()
    .useConstructor("arg1", 123).defaultAnswer(CALLS_REAL_METHODS));
 
- //Mocking a non-static inner abstract class:
+ //mock一个非静态内部抽象类
  InnerAbstract spy = mock(InnerAbstract.class, withSettings()
     .useConstructor().outerInstance(outerInstance).defaultAnswer(CALLS_REAL_METHODS));
  
@@ -793,49 +793,49 @@ Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户�
 
 有关更多信息，请参阅[`MockSettings.useConstructor(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockSettings.html#useConstructor-java.lang.Object...-)。
 
-### 31. [Mockito 模拟可以跨类加载器*序列化*/*反**序列化*（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#serilization_across_classloader)
+### 31. [Mockito 模拟可以跨类加载器*序列化*/*反序列化*（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#serilization_across_classloader)
 
-Mockito 引入了跨类加载器的序列化。与任何其他形式的序列化一样，mock层次结构中的所有类型都必须可序列化，包括答案。由于此序列化模式需要更多的工作，因此这是一个可选设置。
+Mockito 引入了跨类加载器的序列化。与任何其他形式的序列化一样，mock层次结构中的所有类型都必须可序列化，包括Answer。由于此序列化模式需要更多的工作，因此这是一个可选设置。
 
-```
- // use regular serialization
+```java
+ // 使用常规序列化
  mock(Book.class, withSettings().serializable());
 
- // use serialization across classloaders
+ // 使用类加载器序列化
  mock(Book.class, withSettings().serializable(ACROSS_CLASSLOADERS));
  
 ```
 
 有关更多详细信息，请参阅[`MockSettings.serializable(SerializableMode)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockSettings.html#serializable-org.mockito.mock.SerializableMode-)。
 
-### 32.[对深存根更好的通用支持（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#better_generic_support_with_deep_stubs)
+### 32.[对深存根（deep stubs）更好的通用支持（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#better_generic_support_with_deep_stubs)
 
-已改进深度存根以查找类中可用的通用信息。这意味着可以使用这样的类而不必mock行为。
+已改进深存根以查找类中可用的通用信息。这意味着可以使用这样的类而不必mock行为。
 
-```
+```java
  class Lines extends List<Line> {
      // ...
  }
 
  lines = mock(Lines.class, RETURNS_DEEP_STUBS);
 
- // Now Mockito understand this is not an Object but a Line
+ // 现在 Mockito 这不是一个对象而是一个 Line
  Line line = lines.iterator().next();
  
 ```
 
 请注意，在大多数情况下，返回mock的mock是错误的。
 
-### 33. [Mockito JUnit 规则（自 1.10.17 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_junit_rule)
+### 33. [Mockito JUnit rule（自 1.10.17 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_junit_rule)
 
-Mockito 现在提供了一个 JUnit 规则。直到现在JUnit中有两种方法来初始化通过注释的Mockito如注释字段，，，等。 `@Mock``@Spy``@InjectMocks`
+Mockito 现在提供了一个 JUnit rule。直到现在JUnit中有两种方法来初始化注解的字段，通过Mockito的注解 `@Mock` `@Spy` `@InjectMocks` 等。
 
-- 用一个注释 JUnit 测试类 `@RunWith(MockitoJUnitRunner.class)`
-- `MockitoAnnotations.openMocks(Object)`在方法中调用`@Before`
+- 用`@RunWith(MockitoJUnitRunner.class)`注解一个 JUnit 测试类 
+- 在`@Before`方法中调用`MockitoAnnotations.openMocks(Object)`
 
-现在您可以选择使用规则：
+现在您可以选择使用rule：
 
-```
+```java
  @RunWith(YetAnotherRunner.class)
  public class TheTest {
      @Rule public MockitoRule mockito = MockitoJUnit.rule();
@@ -846,9 +846,9 @@ Mockito 现在提供了一个 JUnit 规则。直到现在JUnit中有两种方法
 
 有关更多信息，请参阅[`MockitoJUnit.rule()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnit.html#rule--)。
 
-### 34.[交换机*上*或*关闭*的插件（15年10月1日以来）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#plugin_switch)
+### 34.[切换插件的*启用*或*禁用*（15年10月1日以来）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#plugin_switch)
 
-孵化功能使其成为 mockito 中的一种方式，可以允许切换 mockito-plugin。更多信息在这里[`PluginSwitch`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/PluginSwitch.html)。
+孵化功能，使其成为 mockito 中的一种方式，可以允许切换 mockito-plugin。更多信息在这里[`PluginSwitch`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/PluginSwitch.html)。
 
 ### 35.[自定义验证失败信息](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Custom_verification_failure_message)（自 2.1.0 起）
 
@@ -856,75 +856,66 @@ Mockito 现在提供了一个 JUnit 规则。直到现在JUnit中有两种方法
 
 例子：
 
-
-
-```
- // will print a custom message on verification failure
+```java
+ // 会打印一个自定义的失败信息
  verify(mock, description("This will print on failure")).someMethod();
 
- // will work with any verification mode
+ // 在任何的验证模式都可用
  verify(mock, times(2).description("someMethod should be called twice")).someMethod();
  
 ```
 
 ### 36. [Java 8 Lambda 匹配器支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Lambda_Matching)（自 2.1.0 起）
 
-您可以使用 Java 8 lambda 表达式 with[`ArgumentMatcher`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatcher.html)来减少对[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html). 如果您需要验证mock上函数调用的输入是否正确，那么您通常会使用[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html)来查找使用的操作数，然后对它们进行后续断言。虽然对于复杂的示例，这可能很有用，但也是冗长的。
+您可以使用 Java 8 lambda 表达式和[`ArgumentMatcher`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatcher.html)来减少对[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html)的依赖. 如果您需要验证mock对象上函数调用的输入是否正确，那么您通常会使用[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html)来查找使用的参数，然后对它们进行后续断言。虽然对于复杂的示例，这可能很有用，但也是冗长的。
 
 编写一个 lambda 表达式来表达匹配是很容易的。当与 argThat 结合使用时，函数的参数将作为强类型对象传递给 ArgumentMatcher，因此可以对它执行任何操作。
 
 例子：
 
-
-
-```
- // verify a list only had strings of a certain length added to it
- // note - this will only compile under Java 8
+```java
+ // 验证list只添加了一定长度的字符串
+ // 注意 - 这只会在Java8下编译
  verify(list, times(2)).add(argThat(string -> string.length() < 5));
 
- // Java 7 equivalent - not as neat
+ // Java7下等效的写法，不是很简洁
  verify(list, times(2)).add(argThat(new ArgumentMatcher(){
      public boolean matches(String arg) {
          return arg.length() < 5;
      }
  }));
 
- // more complex Java 8 example - where you can specify complex verification behaviour functionally
+ // 更复杂的Java 8示例 - 您可以在函数上指定复杂的验证行为
  verify(target, times(1)).receiveComplexObject(argThat(obj -> obj.getSubObject().get(0).equals("expected")));
 
- // this can also be used when defining the behaviour of a mock under different inputs
- // in this case if the input list was fewer than 3 items the mock returns null
+ // 也可以使用这一点定义不同输入下mock的行为，
+ // 在这种情况下，如果输入列表少于3项，则模拟返回null
  when(mock.someMethod(argThat(list -> list.size()<3))).thenReturn(null);
  
 ```
 
-### 37. [Java 8 自定义应答支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Custom_Answers)（自 2.1.0 起）
+### 37. [Java 8 自定义Answer支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Custom_Answers)（自 2.1.0 起）
 
-由于[`Answer`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/stubbing/Answer.html)接口只有一种方法，因此已经可以在 Java 8 中使用 lambda 表达式在非常简单的情况下实现它。越需要使用方法调用的参数，就越需要从[`InvocationOnMock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/InvocationOnMock.html).
+由于[`Answer`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/stubbing/Answer.html)接口只有一种方法，因此可以在 Java 8 中使用 lambda 表达式非常简单的实现它。越需要使用方法调用的参数，就越需要使用[`InvocationOnMock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/InvocationOnMock.html).
 
 例子：
 
-
-
-```
- // answer by returning 12 every time
+```java
+ // 每次都返回12的Answer
  doAnswer(invocation -> 12).when(mock).doSomething();
 
- // answer by using one of the parameters - converting into the right
- // type as your go - in this case, returning the length of the second string parameter
- // as the answer. This gets long-winded quickly, with casting of parameters.
+ // 使用参数的Answer - 转换成你期望的正确的类型 - 在这个例子中，返回第二个参数的长度
+ // 这样快速解决了冗长的参数转换
  doAnswer(invocation -> ((String)invocation.getArgument(1)).length())
      .when(mock).doSomething(anyString(), anyString(), anyString());
  
 ```
 
-为方便起见，可以编写自定义答案/操作，它们使用方法调用的参数，作为 Java 8 lambdas。即使在 Java 7 中，降低这些基于类型化接口的自定义答案也可以减少样板。特别是，这种方法将使测试使用回调的函数变得更加容易。方法[`answer`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/AdditionalAnswers.html#answer-org.mockito.stubbing.Answer1-)和[`answerVoid`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/AdditionalAnswers.html#answerVoid-org.mockito.stubbing.VoidAnswer1-) 可用于创建答案。他们依赖相关的回答接口`org.mockito.stubbing`，支持最多 5 个参数的回答。
+为方便起见，可以编写自定义Answer/Action，它们使用 Java 8 lambdas作为方法调用的参数。即使在 Java 7 中，降低这些基于类型化接口的自定义Answer也可以减少样板代码。特别是，这种方法将使使用回调的测试函数变得更加容易。方法[`answer`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/AdditionalAnswers.html#answer-org.mockito.stubbing.Answer1-)和[`answerVoid`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/AdditionalAnswers.html#answerVoid-org.mockito.stubbing.VoidAnswer1-) 可用于创建Answer。他们依赖`org.mockito.stubbing`相关的Answer接口，支持最多 5 个参数的Answer。
 
 例子：
 
-
-
-```
+```java
  // Example interface to be mocked has a function like:
  void execute(String operand, Callback callback);
 
