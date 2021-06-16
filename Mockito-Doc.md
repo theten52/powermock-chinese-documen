@@ -555,7 +555,7 @@ Mockito 通过使用`equals()`方法实现了自然的 Java 风格验证参数�
 
 从这里开始学习 BDD：[https](https://en.wikipedia.org/wiki/Behavior-driven_development) : [//en.wikipedia.org/wiki/Behavior-driven_development](https://en.wikipedia.org/wiki/Behavior-driven_development)
 
-问题是当前的存根 api 与 **when** 关键字不能很好地与**//given //when //then**注释集成。这是因为存根属于测试的**given**组件，而不是测试的**when**组件。因此[`BDDMockito`类引入了一个别名，以便您使用[`BDDMockito.given(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/BDDMockito.html#given-T-)方法存根方法调用。现在它真的很好地与BDD 风格测试的**给定**组件集成了！
+问题是当前的存根 api 与 **when** 关键字不能很好地与**//given //when //then**注释集成。这是因为存根属于测试的**given**组件，而不是测试的**when**组件。因此`BDDMockito`类引入了一个别名，以便您使用[`BDDMockito.given(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/BDDMockito.html#given-T-)方法存根方法调用。现在它真的很好地与BDD 风格测试的**给定**组件集成了！
 
 以下是测试的样子：
 
@@ -584,20 +584,19 @@ mock可以被序列化。使用此功能，您可以在需要可序列化依赖�
 
 警告：这应该很少用于单元测试。
 
-该行为是针对具有不可靠外部依赖性的 BDD 规范的特定用例实现的。这是在 Web 环境中，来自外部依赖项的对象正在被序列化以在层之间传递。
+该行为是针对具有不可靠外部依赖性的 BDD 规范的特定用例实现的。这是在 Web 环境中，来自外部依赖项的对象会被序列化以在层之间传递。
 
 创建可序列化的mock使用[`MockSettings.serializable()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockSettings.html#serializable--)：
 
-```
+```java
    List serializableMock = mock(List.class, withSettings().serializable());
- 
 ```
 
-假设类满足所有正常的[ 序列化要求](https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html)，mock可以被序列[化](https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html)。
+假设类满足所有正常的[ 序列化要求](https://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html)，mock则可以被序列化。
 
 由于 spy(...) 方法没有接受 MockSettings 的重载版本，因此使真正的对象 spy 可序列化需要更多的努力。不用担心，您几乎永远不会使用它。
 
-```
+```java
  List<Object> list = new ArrayList<Object>();
  List<Object> spy = mock(ArrayList.class, withSettings()
                  .spiedInstance(list)
@@ -611,18 +610,18 @@ mock可以被序列化。使用此功能，您可以在需要可序列化依赖�
 1.8.3 版带来了有时可能有用的新注释：
 
 - @[`Captor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Captor.html)简化了[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html) - 当要捕获的参数是一个讨厌的泛型类并且您想避免编译器警告时很有用
-- @ [`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)-您可以改用它[`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)。
-- @ [`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)- 自动将mock或间谍字段注入测试对象。
+- @ [`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)-您可以用它替代[`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)。
+- @ [`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)- 自动将mock或spy字段注入测试对象。
 
-注意@[`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)也可以与@[`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)注解结合使用，这意味着Mockito会将mock注入到被测部分mock中。这种复杂性是您应该只使用部分mock作为最后手段的另一个很好的原因。请参阅有关部分mock的第 16 点。
+注意@[`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)也可以与@[`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)注解结合使用，这意味着Mockito会将mock注入到被测的部分mock中。这种复杂性是您应该只使用部分mock作为最后手段的另一个很好的原因。请参阅有关部分mock的第 16 点。
 
-所有新注释***仅\***在 上处理[`MockitoAnnotations.openMocks(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoAnnotations.html#openMocks-java.lang.Object-)。就像 @[`Mock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mock.html)注释一样，您可以使用内置的 runner:[`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)或 rule: [`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)。
+所有新注解**仅**在 [`MockitoAnnotations.openMocks(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoAnnotations.html#openMocks-java.lang.Object-) 上处理。就像 @[`Mock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mock.html)注释一样，您可以使用内置的 runner:[`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)或 rule: [`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)。
 
 
 
 ### 22.[超时验证](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verification_timeout)（自 1.8.5 起）
 
-允许超时验证。它会导致验证等待指定的时间以进行所需的交互，而不是在尚未发生的情况下立即失败。可能对在并发条件下进行测试很有用。
+允许超时验证。它会等待指定的时间以验证进行所需的交互，而不是在尚未发生的情况下立即失败。可能对在并发条件下进行测试很有用。
 
 这个特性应该很少使用——找出一种更好的方法来测试你的多线程系统。
 
@@ -630,38 +629,35 @@ mock可以被序列化。使用此功能，您可以在需要可序列化依赖�
 
 例子：
 
-
-
-```
-   //passes when someMethod() is called no later than within 100 ms
-   //exits immediately when verification is satisfied (e.g. may not wait full 100 ms)
+```java
+   //处理当 someMethod() 被调用少于100ms的情况
+   //满足验证时立即退出（例如，可能不等待100毫秒）
    verify(mock, timeout(100)).someMethod();
-   //above is an alias to:
+   //上面的代码也可以写作:
    verify(mock, timeout(100).times(1)).someMethod();
 
-   //passes as soon as someMethod() has been called 2 times under 100 ms
+   //当someMethod()在少于100ms内被调用2此时通过
    verify(mock, timeout(100).times(2)).someMethod();
 
-   //equivalent: this also passes as soon as someMethod() has been called 2 times under 100 ms
+   //等价于上面的代码:
    verify(mock, timeout(100).atLeast(2)).someMethod();
  
 ```
 
-### 23.[自动实例化`@Spies`， `@InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#automatic_instantiation)并[构造注射善](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#constructor_injection)（由于1.9.0）
+### 23.[使用`@Spies`， `@InjectMocks`自动实例化对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#automatic_instantiation)并具有[良好的构造函数注入](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#constructor_injection)（1.9.0以后）
 
-Mockito 现在将尝试实例化 @[`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)并将[`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)使用**构造函数**注入、**setter**注入或**字段**注入实例化 @字段。
+Mockito 现在将尝试使用 @[`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)实例化对象并将[`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)实例化的字段使用**构造函数**注入、**setter**注入或**字段**注入。
 
 要利用此功能，您需要使用[`MockitoAnnotations.openMocks(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoAnnotations.html#openMocks-java.lang.Object-),[`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html) 或[`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)。
 
-在 javadoc 中阅读有关可用技巧和注入规则的更多信息 [`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)
+在 [`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)的javadoc 中阅读有关可用技巧和注入规则的更多信息。
 
-```
- //instead:
+```java
  @Spy BeerDrinker drinker = new BeerDrinker();
- //you can write:
+ //也可以这样写：
  @Spy BeerDrinker drinker;
 
- //same applies to @InjectMocks annotation:
+ //@InjectMocks 注解也可以这样用:
  @InjectMocks LocalPub;
  
 ```
@@ -670,7 +666,7 @@ Mockito 现在将尝试实例化 @[`Spy`](https://javadoc.io/static/org.mockito/
 
 Mockito 现在允许您在存根时创建mock。基本上，它允许在一行代码中创建一个存根。这有助于保持测试代码干净。例如，一些无聊的存根可以在测试中的字段初始化时创建和存根：
 
-```
+```java
  public class CarTest {
    Car boringStubbedCar = when(mock(Car.class).shiftGear()).thenThrow(EngineNotStarted.class).getMock();
 
@@ -680,20 +676,20 @@ Mockito 现在允许您在存根时创建mock。基本上，它允许在一行�
 
 ### 25.[忽略存根的验证](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#ignore_stubs_verification)（自 1.9.0 起）
 
-Mockito 现在允许为了验证而忽略存根。有时与`verifyNoMoreInteractions()`或 验证结合使用时很有用`inOrder()`。有助于避免对存根调用的冗余验证 - 通常我们对验证存根不感兴趣。
+Mockito 现在允许为了验证而忽略存根。有时与`verifyNoMoreInteractions()`或`inOrder()` 验证结合使用时很有用。有助于避免对存根调用的冗余验证 - 通常我们对验证存根不感兴趣。
 
-**警告**，`ignoreStubs()`可能会导致过度使用 verifyNoMoreInteractions(ignoreStubs(...)); 请记住，出于`verifyNoMoreInteractions()` javadoc 中概述的原因，Mockito 不建议对每个测试进行轰炸[`verifyNoMoreInteractions(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verifyNoMoreInteractions-java.lang.Object...-)
+**警告**，`ignoreStubs()`可能会导致 verifyNoMoreInteractions(ignoreStubs(...)) 过度使用; 请记住，出于`verifyNoMoreInteractions()` javadoc 中概述的原因，Mockito 不建议对每个测试都使用[`verifyNoMoreInteractions(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verifyNoMoreInteractions-java.lang.Object...-)。
 
 一些例子：
 
-```
+```java
  verify(mock).foo();
  verify(mockTwo).bar();
 
- //ignores all stubbed methods:
+ //忽略所有的存根方法:
  verifyNoMoreInteractions(ignoreStubs(mock, mockTwo));
 
- //creates InOrder that will ignore stubbed
+ //创建 InOrder，它会忽略存根
  InOrder inOrder = inOrder(ignoreStubs(mock, mockTwo));
  inOrder.verify(mock).foo();
  inOrder.verify(mockTwo).bar();
@@ -701,28 +697,28 @@ Mockito 现在允许为了验证而忽略存根。有时与`verifyNoMoreInteract
  
 ```
 
-可以在 javadoc 中找到高级示例和更多详细信息 [`ignoreStubs(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#ignoreStubs-java.lang.Object...-)
+可以在  [`ignoreStubs(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#ignoreStubs-java.lang.Object...-)的 javadoc 中找到高级示例和更多详细信息。
 
 ### 26. [Mocking 细节](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocking_details)（2.2.x 改进）
 
-Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户和mock框架集成商很有用。
+Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户和mock框架集成者很有用。
 
-```
-   //To identify whether a particular object is a mock or a spy:
+```java
+   //确定特定对象是mock还是spy:
    Mockito.mockingDetails(someObject).isMock();
    Mockito.mockingDetails(someObject).isSpy();
 
-   //Getting details like type to mock or default answer:
+   //获取详细信息比如mock的类型或者默认的Answer:
    MockingDetails details = mockingDetails(mock);
    details.getMockCreationSettings().getTypeToMock();
    details.getMockCreationSettings().getDefaultAnswer();
 
-   //Getting invocations and stubbings of the mock:
+   //获取mock对象的交互或者存根:
    MockingDetails details = mockingDetails(mock);
    details.getInvocations();
    details.getStubbings();
 
-   //Printing all interactions (including stubbing, unused stubs)
+   //打印所有的交互（包括使用的存根，未使用的存根）
    System.out.println(mockingDetails(mock).printInvocations());
  
 ```
