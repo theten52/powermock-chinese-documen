@@ -916,22 +916,21 @@ Mockito 现在提供了一个 JUnit rule。直到现在JUnit中有两种方法�
 例子：
 
 ```java
- // Example interface to be mocked has a function like:
+ // 被mock的示例接口具有以下函数:
  void execute(String operand, Callback callback);
 
- // the example callback has a function and the class under test
- // will depend on the callback being invoked
+ // 示例回调有个函数而且被测试的类会依赖这个回调当它被调用时
  void receive(String item);
 
- // Java 8 - style 1
+ // Java 8 - 方式 1
  doAnswer(AdditionalAnswers.answerVoid((operand, callback) -> callback.receive("dummy"))
      .when(mock).execute(anyString(), any(Callback.class));
 
- // Java 8 - style 2 - assuming static import of AdditionalAnswers
+ // Java 8 - 方式 2 - 假设已经静态导入了类：AdditionalAnswers
  doAnswer(answerVoid((String operand, Callback callback) -> callback.receive("dummy"))
      .when(mock).execute(anyString(), any(Callback.class));
 
- // Java 8 - style 3 - where mocking function to is a static member of test class
+ // Java 8 - style 3 - 当被mock函数是测试类的静态成员
  private static void dummyCallbackImpl(String operation, Callback callback) {
      callback.receive("dummy");
  }
@@ -945,12 +944,11 @@ Mockito 现在提供了一个 JUnit rule。直到现在JUnit中有两种方法�
          callback.receive("dummy");
      }})).when(mock).execute(anyString(), any(Callback.class));
 
- // returning a value is possible with the answer() function
- // and the non-void version of the functional interfaces
- // so if the mock interface had a method like
+ // 使用answer()返回一个可能值以及函数接口的非void版本，
+ // 也就是说这个mock接口像下面这样
  boolean isSameString(String input1, String input2);
 
- // this could be mocked
+ // 可以被这样mock
  // Java 8
  doAnswer(AdditionalAnswers.answer((input1, input2) -> input1.equals(input2))))
      .when(mock).execute(anyString(), anyString());
@@ -963,12 +961,12 @@ Mockito 现在提供了一个 JUnit rule。直到现在JUnit中有两种方法�
  
 ```
 
-### 38.[元数据和泛型类型保留](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Meta_Data_And_Generics)（自 2.1.0 起）
+### 38.[元数据和泛型类型的保留](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Meta_Data_And_Generics)（自 2.1.0 起）
 
-Mockito 现在保留对mock方法和类型以及通用元数据的注释。以前，mock类型不会保留类型的注释，除非它们被显式继承并且从不保留方法的注释。因此，以下条件现在成立：
+Mockito 现在保留对mock方法的类型以及通用元数据的注解。以前，mock类型不会保留类型的注解，除非它们被显式继承并且从不保留方法的注解。因此，以下条件现在成立：
 
-```
- @MyAnnotation
+```java
+  @MyAnnotation
   class Foo {
     List<String> bar() { ... }
   }
@@ -979,102 +977,102 @@ Mockito 现在保留对mock方法和类型以及通用元数据的注释。以�
  
 ```
 
-使用 Java 8 时，Mockito 现在还保留了类型注释。这是默认行为，[如果使用替代方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#28)可能不会成立[`MockMaker`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/MockMaker.html)。
+使用 Java 8 时，Mockito 现在还保留了类型注解。这是默认行为，[如果使用替代方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#28)[`MockMaker`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/MockMaker.html)可能不会成立。
 
-### 39.[mock final 类型、枚举和 final 方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Mocking_Final)（自 2.1.0 起）
+### 39.[mock final类、枚举和 final方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Mocking_Final)（自 2.1.0 起）
 
-Mockito 现在为mock[`Incubating`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Incubating.html)final 类和方法提供了一个可选的支持。这是一项了不起的改进，展示了 Mockito 对改进测试体验的永恒追求。我们的目标是 Mockito “只适用于”final 类和方法。以前它们被认为是*unmockable*，防止用户嘲笑。我们已经开始讨论如何默认启用此功能。目前，该功能仍然是可选的，因为我们正在等待社区的更多反馈。
+Mockito 现在为mock final 类和方法提供了一个可选的支持，[`Incubating`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Incubating.html)。这是一项了不起的改进，展示了 Mockito 对改进测试体验的永恒追求。我们的目标是 Mockito “只适用于”final 类和方法。以前它们被认为是*unmockable*的，防止用户mock。我们已经开始讨论如何默认启用此功能。目前，该功能仍然是可选的，因为我们正在等待社区的更多反馈。
 
-这个替代的mock生成器使用 Java 检测 API 和子类的组合，而不是创建一个新类来表示mock。这样，就可以mock最终类型和方法。
+这个替代的mock生成器使用 Java Instrumentation API 和子类的组合，而不是创建一个新类来表示mock。这样，就可以mock final类和方法了。
 
-这个mock生成器**默认**是**关闭的，**因为它基于完全不同的mock机制，需要更多来自社区的反馈。它可以通过 mockito 扩展机制显式激活，只需在类路径中创建一个`/mockito-extensions/org.mockito.plugins.MockMaker` 包含 value的文件`mock-maker-inline`。
+这个mock生成器**默认**是**关闭的，**因为它基于完全不同的mock机制，需要更多来自社区的反馈。它可以通过 mockito 扩展机制显式激活，只需在类路径中创建一个包含 value为`mock-maker-inline`的`/mockito-extensions/org.mockito.plugins.MockMaker` 文件。
 
-为方便起见，Mockito 团队提供了一个工件，其中预配置了此mock生成器。不要使用*mockito-core*工件，而是 在您的项目中包含*mockito-inline*工件。请注意，一旦对最终类和方法的mock集成到默认mock生成器中，此工件可能会停止使用。
+为方便起见，Mockito 团队提供了一个工件，其中预配置了此mock生成器。不要使用*mockito-core*工件，而是 在您的项目中包含*mockito-inline*工件。请注意，一旦对final类和方法的mock集成到默认mock生成器中，此工件可能会停止使用。
 
-关于这个mock制造商的一些值得注意的说明：
+关于这个mock marker的一些值得注意的说明：
 
-- mock最终类型和枚举与mock设置不兼容，例如：
+- mock final类和枚举与mock设置不兼容，例如：
   - 显式序列化支持 `withSettings().serializable()`
   - 额外接口 `withSettings().extraInterfaces()`
 - 有些方法不能被mock
-  - 包装可见的方法 `java.*`
+  - `java.*`中包可见的方法 
   - `native` 方法
-- 这个 mock maker 是围绕 Java Agent 运行时附件设计的；这需要一个兼容的 JVM，它是 JDK（或 Java 9 VM）的一部分。但是，在 Java 9 之前的非 JDK VM 上运行时，可以 在启动 JVM 时使用参数手动添加[Byte Buddy Java 代理 jar](https://bytebuddy.net/)`-javaagent`。
+- 这个 mock maker 是围绕 Java Agent 运行时附件设计的；这需要一个兼容的 JVM，它是 JDK（或 Java 9 VM）的一部分。但是，在 Java 9 之前的非 JDK VM 上运行时，可以 在启动 JVM 时手动添加[Byte Buddy Java 代理 jar](https://bytebuddy.net/)`-javaagent`参数使用。
 
-如果您对此功能的更多详细信息感兴趣，请阅读 javadoc `org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker`
+如果您对此功能的更多详细信息感兴趣，请阅读`org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker` 的 javadoc。
 
-### 40.[ 使用“更严格”的 Mockito 提高生产力和更清洁的测试](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#strict_mockito)（自 2.+ 起）
+### 40.[ 使用“更严格”的 Mockito 提高生产力和编写更简明的测试](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#strict_mockito)（自 2.+ 起）
 
 要快速了解“更严格”的 Mockito 如何提高您的工作效率并使您的测试更清晰，请参阅：
 
-- 使用 JUnit4 规则严格存根 -[`MockitoRule.strictness(Strictness)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html#strictness-org.mockito.quality.Strictness-)使用[`Strictness.STRICT_STUBS`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/Strictness.html#STRICT_STUBS)
+- 使用 JUnit4 规则进行严格存根 -使用[`Strictness.STRICT_STUBS`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/Strictness.html#STRICT_STUBS) 的 [`MockitoRule.strictness(Strictness)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html#strictness-org.mockito.quality.Strictness-)
 - 使用 JUnit4 Runner 进行严格存根 - `MockitoJUnitRunner.Strict`
 - 使用 JUnit5 扩展进行严格存根 - `org.mockito.junit.jupiter.MockitoExtension`
-- 使用 TestNG Listener [MockitoTestNGListener 进行](https://github.com/mockito/mockito-testng)严格存根
-- 如果您不能使用跑步者/规则，则严格存根 - [`MockitoSession`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html)
-- 不必要的存根检测 [`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)
+- 使用 TestNG Listener [MockitoTestNGListener ](https://github.com/mockito/mockito-testng)进行严格存根
+- 如果您不能使用runner/rule，则使用 [`MockitoSession`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html)进行严格存根
+- 不必使用 [`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)进行存根检测
 - 存根参数不匹配警告，记录在 [`MockitoHint`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/MockitoHint.html)
 
-默认情况下，Mockito 是一个“松散”的mock框架。可以在不预先设定任何期望的情况下与mock交互。这是有意的，它通过强制用户明确他们想要存根/验证的内容来提高测试质量。它也非常直观、易于使用，并且与干净的测试代码的“给定”、“何时”、“那么”模板很好地融合在一起。这也不同于过去的经典mock框架，它们默认是“严格的”。
+默认情况下，Mockito 是一个“松散”的mock框架。可以在不预先设定任何期望的情况下与mock交互。这是有意的，它通过强制用户明确他们想要存根/验证的内容来提高测试质量。它也非常直观、易于使用，并且与干净的测试代码的“given”、“when”、“then”模板很好地融合在一起。这也不同于过去的经典mock框架，它们默认是“严格的”。
 
 默认情况下“松散”使得 Mockito 测试有时更难调试。在某些情况下，错误配置的存根（例如使用错误的参数）会强制用户使用调试器运行测试。理想情况下，测试失败是显而易见的，不需要调试器来确定根本原因。从 2.1 版开始，Mockito 已经获得了将框架推向“严格”的新功能。我们希望 Mockito 提供出色的可调试性，同时不失去其核心mock风格，针对直观性、明确性和干净的测试代码进行了优化。
 
-帮助莫基托！尝试新功能，给我们反馈，在 GitHub[问题 769](https://github.com/mockito/mockito/issues/769)上加入关于 Mockito 严格性的讨论 。
+帮助Mockito！尝试新功能，给我们反馈，在 GitHub[问题 769](https://github.com/mockito/mockito/issues/769)上加入关于 Mockito 严格性的讨论 。
 
 ### 41.[ 用于框架集成的高级公共 API（自 2.10.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#framework_integrations_api)
 
 2017 年夏季，我们决定 Mockito [应该](https://www.linkedin.com/pulse/mockito-vs-powermock-opinionated-dogmatic-static-mocking-faber) 为高级框架集成[提供更好的 API ](https://www.linkedin.com/pulse/mockito-vs-powermock-opinionated-dogmatic-static-mocking-faber)。新 API 不适用于想要编写单元测试的用户。它适用于需要使用一些自定义逻辑扩展或包装 Mockito 的其他测试工具和mock框架。在设计和实施过程中（[issue 1110](https://github.com/mockito/mockito/issues/1110)），我们开发并更改了以下公共 API 元素：
 
 - 新[`MockitoPlugins`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/MockitoPlugins.html)- 使框架集成商能够访问默认的 Mockito 插件。当需要实现自定义插件时很有用，例如[`MockMaker`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/MockMaker.html) 并将某些行为委托给默认的 Mockito 实现。
-- 新[`MockSettings.build(Class)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockSettings.html#build-java.lang.Class-)- 创建 Mockito 稍后使用的mock设置的不可变视图。用于使用[`InvocationFactory`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/InvocationFactory.html)或在实现 custom 时创建调用[`MockHandler`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/MockHandler.html)。
-- 新[`MockingDetails.getMockHandler()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockingDetails.html#getMockHandler--)- 其他框架可以使用mock处理程序以编程方式mockmock对象上的调用。
+- 新[`MockSettings.build(Class)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockSettings.html#build-java.lang.Class-)- 创建 Mockito 稍后使用的mock设置的不可变视图。用于使用[`InvocationFactory`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/InvocationFactory.html)或在实现自定义 [`MockHandler`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/MockHandler.html) 时创建调用。
+- 新[`MockingDetails.getMockHandler()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockingDetails.html#getMockHandler--)- 其他框架可以使用mock处理程序以编程方式mock`被mock对象`上的调用。
 - 新[`MockHandler.getMockSettings()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/MockHandler.html#getMockSettings--)- 用于获取创建mock对象的设置。
-- 新建[`InvocationFactory`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/InvocationFactory.html)- 提供创建[`Invocation`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/Invocation.html)对象实例的方法。对于需要以编程方式mockmock对象上的方法调用的框架集成很有用。
+- 新建[`InvocationFactory`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/InvocationFactory.html)- 提供创建[`Invocation`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/Invocation.html)对象实例的方法。对于需要以编程方式mock`被mock对象`上的方法调用的框架集成很有用。
 - 新[`MockHandler.getInvocationContainer()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/invocation/MockHandler.html#getInvocationContainer--)- 提供对没有方法（标记接口）的调用容器对象的访问。需要容器来隐藏内部实现并避免将其泄漏到公共 API。
 - 改变`Stubbing`- 它现在扩展[`Answer`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/stubbing/Answer.html)接口。它向后兼容，因为 Stubbing 接口不可扩展（请参阅 参考资料[`NotExtensible`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/NotExtensible.html)）。这种变化对我们的用户来说应该是无缝的。
-- 已弃用`InternalMockHandler`- 为了适应 API 更改，我们需要弃用此接口。该接口始终被记录为内部，我们没有证据表明它被社区使用。对于我们的用户来说，弃用应该是完全无缝的。
-- [`NotExtensible`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/NotExtensible.html)- 向用户表明她不应提供给定类型的自定义实现的公共注释。帮助框架集成商和我们的用户了解如何安全地使用 Mockito API。
+- 弃用`InternalMockHandler`- 为了适应 API 更改，我们需要弃用此接口。该接口始终被记录为内部，我们没有证据表明它被社区使用。对于我们的用户来说，弃用应该是完全无缝的。
+- [`NotExtensible`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/NotExtensible.html)- 向用户表明她不应提供给定类型的自定义实现的公共注解。帮助框架集成商和我们的用户了解如何安全地使用 Mockito API。
 
 你有反馈吗？请在[issue 1110 中](https://github.com/mockito/mockito/issues/1110)发表评论。
 
-### 42.[ 用于集成的新 API：侦听验证开始事件（自 2.11.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verifiation_started_listener)
+### 42.[ 用于集成的新 API：监听验证开始事件（自 2.11.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verifiation_started_listener)
 
 [Spring Boot](https://projects.spring.io/spring-boot) 等框架集成需要公共 API 来处理双代理用例（[问题 1191](https://github.com/mockito/mockito/issues/1191)）。我们补充说：
 
-- 新增[`VerificationStartedListener`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/listeners/VerificationStartedListener.html)并[`VerificationStartedEvent`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/listeners/VerificationStartedEvent.html) 启用框架集成商以替换用于验证的mock对象。主要的驱动用例是[Spring Boot](https://projects.spring.io/spring-boot/)集成。有关详细信息，请参阅 Javadoc for [`VerificationStartedListener`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/listeners/VerificationStartedListener.html).
+- 启用新增的[`VerificationStartedListener`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/listeners/VerificationStartedListener.html)和[`VerificationStartedEvent`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/listeners/VerificationStartedEvent.html) 对象，框架集成商使用其可以替换用于验证的mock对象。主要的驱动用例是[Spring Boot](https://projects.spring.io/spring-boot/)集成。有关详细信息，请参阅 [`VerificationStartedListener`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/listeners/VerificationStartedListener.html) 的 Javadoc。
 - 新的公共方法[`MockSettings.verificationStartedListeners(VerificationStartedListener...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockSettings.html#verificationStartedListeners-org.mockito.listeners.VerificationStartedListener...-) 允许在mock创建时提供验证启动的侦听器。
 - [`MockingDetails.getMock()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockingDetails.html#getMock--)添加了新的便捷方法以使`MockingDetails`API 更加完整。我们发现这种方法在实施过程中很有用。
 
-### 43.[ 用于集成的新 API：`MockitoSession`可用于测试框架（自 2.15.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_session_testing_frameworks)
+### 43.[ 用于集成的新 API：可用于测试框架的`MockitoSession`（自 2.15.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_session_testing_frameworks)
 
-[`MockitoSessionBuilder`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html)并[`MockitoSession`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html)通过测试框架集成（例如[`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)对于 JUnit）来增强以实现重用：
+[`MockitoSessionBuilder`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html)和[`MockitoSession`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html)通过测试框架集成（例如JUnit的[`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)对于 ）来增强以实现重用：
 
-- [`MockitoSessionBuilder.initMocks(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html#initMocks-java.lang.Object...-)允许传入多个测试类实例，以初始化使用 Mockito 注释（如[`Mock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mock.html). 当测试使用多个（例如嵌套的）测试类实例时，此方法对于高级框架集成（例如 JUnit Jupiter）很有用。
-- [`MockitoSessionBuilder.name(String)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html#name-java.lang.String-)允许将测试框架中的名称传递给 [`MockitoSession`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html)将在使用时用于打印警告[`Strictness.WARN`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/Strictness.html#WARN)的名称。
-- [`MockitoSessionBuilder.logger(MockitoSessionLogger)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html#logger-org.mockito.session.MockitoSessionLogger-) 可以自定义用于在完成mock时生成的提示/警告的记录器（对于测试和连接由 JUnit Jupiter 等测试框架提供的报告功能很有用）。
+- [`MockitoSessionBuilder.initMocks(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html#initMocks-java.lang.Object...-)允许传入多个测试类实例，以初始化使用 Mockito 注解（如[`Mock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mock.html). 当测试使用多个（例如嵌套的）测试类实例时，此方法对于高级框架集成（例如 JUnit Jupiter）很有用。
+- [`MockitoSessionBuilder.name(String)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html#name-java.lang.String-)允许将测试框架中的名称传递给 [`MockitoSession`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html)，它将在使用时用于打印警告[`Strictness.WARN`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/Strictness.html#WARN)的名称。
+- [`MockitoSessionBuilder.logger(MockitoSessionLogger)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/session/MockitoSessionBuilder.html#logger-org.mockito.session.MockitoSessionLogger-) 可以自定义的用于在完成mock时生成的提示/警告的记录器（对于测试和连接由 JUnit Jupiter 等测试框架提供的报告功能很有用）。
 - [`MockitoSession.setStrictness(Strictness)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html#setStrictness-org.mockito.quality.Strictness-)允许更改[`MockitoSession`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html) 一次性场景的严格性，例如，它可以为类中的所有测试配置默认严格性，但可以更改单个或几个测试的严格性。
-- [`MockitoSession.finishMocking(Throwable)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html#finishMocking-java.lang.Throwable-)添加是为了避免可能出现的混淆，因为存在多个竞争失败。当提供的*失败* 不是时，它将禁用某些检查`null`。
+- [`MockitoSession.finishMocking(Throwable)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoSession.html#finishMocking-java.lang.Throwable-)为了避免可能出现的混淆而添加，因为存在多个竞争失败。当提供的*失败* 不是`null`时，它将禁用某些检查。
 
 ### 44.[ 已弃用，`org.mockito.plugins.InstantiatorProvider`因为它会泄漏内部 API。它被替换为`org.mockito.plugins.InstantiatorProvider2 (Since 2.15.4)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_instantiator_provider_deprecation)
 
-[`InstantiatorProvider`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/InstantiatorProvider.html)返回一个内部 API。因此它被弃用并由[`InstantiatorProvider2`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/InstantiatorProvider2.html). 旧的[`instantiator providers`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/InstantiatorProvider.html)将继续工作，但建议切换到新的 API。
+[`InstantiatorProvider`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/InstantiatorProvider.html)返回一个内部 API。因此它被弃用并由[`InstantiatorProvider2`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/InstantiatorProvider2.html)替换. 旧的[`instantiator providers`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/plugins/InstantiatorProvider.html)将继续工作，但建议切换到新的 API。
 
 ### 45.[新的 JUnit Jupiter (JUnit5+) 扩展](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#junit5_mockito)
 
-要与 JUnit Jupiter (JUnit5+) 集成，请使用 `org.mockito:mockito-junit-jupiter` 工件。有关整合的用法的详细信息，请参阅[的JavaDoc的`MockitoExtension`](https://javadoc.io/doc/org.mockito/mockito-junit-jupiter/latest/org/mockito/junit/jupiter/MockitoExtension.html)。
+要与 JUnit Jupiter (JUnit5+) 集成，请使用 `org.mockito:mockito-junit-jupiter` 工件。有关整合的用法的详细信息，请参阅[`MockitoExtension`](https://javadoc.io/doc/org.mockito/mockito-junit-jupiter/latest/org/mockito/junit/jupiter/MockitoExtension.html) 的JavaDoc。
 
 ### 46.[ 新的`Mockito.lenient()`和`MockSettings.lenient()`的方法（自2.20.0）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_lenient)
 
 从早期的 Mockito 2 开始就提供了严格的存根功能。它非常有用，因为它可以推动更清晰的测试并提高生产力。严格存根报告不必要的存根，检测存根参数不匹配并使测试更加 DRY ( [`Strictness.STRICT_STUBS`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/Strictness.html#STRICT_STUBS))。这需要权衡：在某些情况下，您可能会从严格的存根中得到假阴性。为了解决这些情况，您现在可以将特定存根配置为宽松，而所有其他存根和mock使用严格存根：
 
-```
+```java
    lenient().when(mock.foo()).thenReturn("ok");
  
 ```
 
 如果您希望给定mock上的所有存根都是宽松的，您可以相应地配置mock：
 
-```
+```mock
    Foo mock = Mockito.mock(Foo.class, withSettings().lenient());
  
 ```
@@ -1083,84 +1081,39 @@ Mockito 现在为mock[`Incubating`](https://javadoc.io/static/org.mockito/mockit
 
 ### 47.[用于清除内联mock中mock状态的新 API（自 2.25.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#clear_inline_mocks)
 
-在某些特定的、罕见的情况下（问题[#1619](https://github.com/mockito/mockito/pull/1619)）内联mock会导致内存泄漏。没有干净的方法可以完全缓解这个问题。因此，我们引入了一个新的 API 来明确清除mock状态（仅在内联mock中有意义！）。请参阅 中的示例用法[`MockitoFramework.clearInlineMocks()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoFramework.html#clearInlineMocks--)。如果您有反馈或更好的想法如何解决问题，请联系。
+在某些特定的、罕见的情况下（问题[#1619](https://github.com/mockito/mockito/pull/1619)）内联mock会导致内存泄漏。没有干净的方法可以完全缓解这个问题。因此，我们引入了一个新的 API 来明确清除mock状态（仅在内联mock中有意义！）。请参阅 [`MockitoFramework.clearInlineMocks()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoFramework.html#clearInlineMocks--) 中的示例用法。如果您有反馈或更好的如何解决问题的想法，请联系。
 
 ### 48.[mock静态方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#static_mocks)（自 3.4.0 起）
 
-使用[内联 mock maker 时](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#0.2)，可以在当前线程和用户定义的范围内mock静态方法调用。这样，Mockito 可确保同时和顺序运行的测试不会相互干扰。为了确保静态mock保持临时，建议在 try-with-resources 构造中定义范围。在以下示例中，除非mock，否则`Foo`类型的静态方法将返回`foo`：
+使用[内联 mock maker 时](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#0.2)，可以在当前线程和用户定义的范围内mock静态方法调用。这样，Mockito 可确保同时和顺序运行的测试不会相互干扰。为了确保静态mock保持临时，建议在 try-with-resources 构造中定义范围。在以下示例中，除非mock，否则`Foo`类的静态方法将返回`foo`：
 
-```
+```java
  assertEquals("foo", Foo.method());
  try (MockedStatic mocked = mockStatic(Foo.class)) {
- mocked.when(Foo::method).thenReturn("bar");
- assertEquals("bar", Foo.method());
- mocked.verify(Foo::method);
+     mocked.when(Foo::method).thenReturn("bar");
+     assertEquals("bar", Foo.method());
+     mocked.verify(Foo::method);
  }
  assertEquals("foo", Foo.method());
  
 ```
 
-由于静态mock的定义范围，一旦范围被释放，它就会返回其原始行为。要定义mock行为并验证静态方法调用，请使用`MockedStatic`返回的 。
-
-
+由于静态mock的定义范围，一旦范围被释放，它就会返回其原始行为。要定义mock行为并验证静态方法调用，请使用`MockedStatic`返回的对象 。
 
 ### 49.[mock对象构造](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocked_construction)（自 3.5.0 起）
 
-使用[内联mock maker 时](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#0.2)，可以在当前线程和用户定义的范围内对构造函数调用生成[mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#0.2)。这样，Mockito 可确保同时和顺序运行的测试不会相互干扰。为了确保构造函数mock保持临时，建议在 try-with-resources 构造中定义范围。在以下示例中，`Foo`类型的构造将生成一个mock：
+使用[内联mock maker 时](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#0.2)，可以在当前线程和用户定义的范围内对构造函数调用生成[mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#0.2)。这样，Mockito 可确保同时和顺序运行的测试不会相互干扰。为了确保构造函数mock保持临时，建议在 try-with-resources 构造中定义范围。在以下示例中，构造的`Foo`类将生成一个mock：
 
-```
+```java
  assertEquals("foo", new Foo().method());
  try (MockedConstruction mocked = mockConstruction(Foo.class)) {
- Foo foo = new Foo();
- when(foo.method()).thenReturn("bar");
- assertEquals("bar", foo.method());
- verify(foo).method();
+ 		Foo foo = new Foo();
+ 		when(foo.method()).thenReturn("bar");
+ 		assertEquals("bar", foo.method());
+ 		verify(foo).method();
  }
  assertEquals("foo", new Foo().method());
  
 ```
 
-由于模拟构造的定义范围，一旦释放范围，对象构造将返回其原始行为。要定义模拟行为并验证方法调用，请使用`MockedConstruction`返回的 。
-
-
-
-```java
-
-```
-
-#### 
-
-```java
-
-```
-
-#### 
-
-```java
-
-```
-
-#### 
-
-```java
-
-```
-
-#### 
-
-```java
-
-```
-
-#### 
-
-```java
-
-```
-
-#### 
-
-```java
-
-```
-
+由于mock对象构造的定义范围，一旦释放范围，对象构造将返回其原始行为。要定义模拟行为并验证方法调用，请使用`MockedConstruction`返回的对象 。
