@@ -44,14 +44,14 @@ System.out.println(mockedList.get(999));
 ### 更多：
 
 - [`mock()`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#mock-java.lang.Class-)/[`@Mock`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mock.html): 创建mock对象
-  - 具体的行为可以通过 [`Answer`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/stubbing/Answer.html)/[`MockSettings`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/MockSettings.html)指定
+  - （可选）可以通过 [`Answer`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/stubbing/Answer.html)/[`MockSettings`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/MockSettings.html)指定具体的行为
   - [`when()`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#when-T-)/[`given()`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/BDDMockito.html#given-T-) 指定mock对象应该具有的行为
   - 如果mock对象提供的结果不是你需要的，你可以通过继承 [`Answer`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/stubbing/Answer.html)接口自己进行扩展。
 - [`spy()`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#spy-T-)/[`@Spy`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Spy.html): 部分mock, 真正的方法会被调用但是仍然可以被验证和存根。
-- [`@InjectMocks`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/InjectMocks.html): 自动使用主机注入 mocks/spies 字段通过 `@Spy` 或 `@Mock`
-- [`verify()`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#verify-T-): 检查方法使用被给定的参数调用过
+- [`@InjectMocks`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/InjectMocks.html): 会被 `@Spy` 或 `@Mock`自动注入相关字段的mocks/spies对象。
+- [`verify()`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#verify-T-): 检查方法是否被给定的参数调用过
   - 可以使用灵活的参数匹配,比如通过 [`any()`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/ArgumentMatchers.html#any--)表示任何表达式
-  - 或者捕获使用 [`@Captor`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Captor.html) 调用的参数
+  - 或者使用 [`@Captor`](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Captor.html) 捕获调用的参数
 - 用 [BDDMockito](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/BDDMockito.html)尝试行为驱动开发的语法
 - 在Android上使用 Mockito, 感谢 [dexmaker](https://github.com/crittercism/dexmaker)团队的工作
 
@@ -60,9 +60,9 @@ System.out.println(mockedList.get(999));
 - 不要mock不属于你的类型
 - 不要mock值对象
 - 不要mock所有的东西
-- 爱你的测试！
+- 在测试中展示你的爱！
 
-点击 [这里](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html) 查看更对的的文档和示例. 所有的文档都是使用JavaDoc生成的所以你不需要经常查出此文档。这儿也有一个 [RefCard](https://dzone.com/refcardz/mockito).
+点击 [这里](http://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html) 查看更多的文档和示例. 所有的文档都是使用JavaDoc生成的所以你不需要经常查出此文档。这儿也有一个 [RefCard](https://dzone.com/refcardz/mockito).
 
 如果您有建议，文档查找不清楚，或发现bug，请写信到我们的[邮件列表](http://groups.google.com/group/mockito)。 您可以在 [GitHub](https://github.com/mockito/mockito/issues)中报告功能请求和错误。
 
@@ -70,7 +70,7 @@ System.out.println(mockedList.get(999));
 
 ## Mockito 文档
 
-Mockito 库允许创建mock对象，验证方法代用和存根方法调用。
+Mockito 库允许创建mock对象，验证方法调用用和存根方法调用。
 
 ### 1.验证mock对象的行为（方法是否被调用以及调用返回值）
 
@@ -117,7 +117,7 @@ Mockito 库允许创建mock对象，验证方法代用和存根方法调用。
 ```
 
 - 默认情况下，对于所有方法的返回值，mock将返回 null、原始/原始包装值或空集合，视情况而定。例如 int/Integer 返回0，布尔值/布尔值返回false。
-- 存根可以被覆盖：例如，普通存根可以进入夹具设置（fixture setup），但测试方法可以覆盖它。请注意，覆盖存根是一种潜在的代码异味，表示存根过多。
+- 存根可以被覆盖：例如，普通存根可以进入测试夹具（before方法）时设置，但在测试方法可以覆盖它。请注意，覆盖存根是一种潜在的代码异味，表示存根过多。
 - 一旦被存根，该方法将始终返回一个存根值，无论它被调用多少次。
 - 最后的存根更重要 - 当您多次用相同的参数存根相同的方法时。换句话说：**存根的顺序**很**重要，**但它只是很少有意义，例如当存根完全相同的方法调用或有时使用参数匹配器时等。
 
@@ -143,7 +143,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
  verify(mockedList).add(argThat(someString -> someString.length() > 5));
 ```
 
-参数配器允许灵活的验证或存根。 查看更多内置匹配器和**自定义参数匹配器/ hamcrest 匹配器的**示例。 [`点击这里`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatchers.html) [`或这里。`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/hamcrest/MockitoHamcrest.html)
+参数配器允许灵活的验证或存根。 查看更多内置匹配器和**自定义参数匹配器/ hamcrest 匹配器的**示例。 [`点击这里`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatchers.html) 或 [`这里。`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/hamcrest/MockitoHamcrest.html)
 
 有关仅**自定义参数匹配器的信息，**请查看[`ArgumentMatcher`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatcher.html)类的javadoc 。
 
@@ -165,7 +165,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
    //上面的写法是错误的 - 异常会被抛出因为第三个参数并不是参数匹配器的形式
 ```
 
-匹配器方法如`anyObject()`，`eq()` **不会**返回匹配器。在内部，它们在堆栈上记录一个匹配器并返回一个虚拟值（通常为空）。此实现是由于 java 编译器强加的静态类型安全。结果是您不能在验证/存根之外的方法使用`anyObject()`,`eq()`方法。
+匹配器方法如`anyObject()`，`eq()` **不会**返回匹配器。在内部，它们在堆栈上记录一个匹配器并返回一个虚拟值（通常为空）。此实现是由于 java 编译器强加的静态类型安全。结果是您不能在使用`anyObject()`,`eq()`方法验证/存根之外的方法。
 
 ### 4.验证确切的调用次数/至少调用x次/从未调用
 
@@ -415,11 +415,11 @@ public class ArticleManagerTest {
 
 ### 13.[监视真实对象：使用spy](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy)
 
-您可以创建真实对象的间谍。当您使用 spy 时，将调用**真正的**方法（除非方法被存根）。
+您可以监视真实对象（使用spy）。当您使用 spy 时，将调用**真正的**方法（除非方法被存根）。
 
-真正的间谍应该**谨慎**使用**，偶尔使用**，例如在处理遗留代码时。
+spy应该**谨慎**使用，例如在处理遗留代码时偶尔使用。
 
-对真实对象的监视可以与“部分mock”概念相关联。 **在 1.8 版本之前**，Mockito 间谍并不是真正的部分mock。原因是我们认为部分mock是一种代码异味。在某些时候，我们发现了部分mock的合法用例（第 3 方接口，遗留代码的临时重构）。
+对真实对象的监视可以与“部分mock”概念相关联。 **在 1.8 版本之前**，Mockito spy并不是真正的部分mock。原因是我们认为部分mock是一种代码异味。在某些时候，我们发现了部分mock的合法用例（第 3 方接口，遗留代码的临时重构）。
 
 
 
@@ -446,9 +446,9 @@ public class ArticleManagerTest {
  
 ```
 
-#### 监视真实对象的重要问题！
+#### 监视真实对象的重要问题：
 
-1. 有时将`when(Object)`用于已经存根的spy对象是不可能或不切实际的。因此在使用间谍时请考虑`doReturn`|`Answer`|`Throw()`存根方法族。例子：
+1. 有时将`when(Object)`用于已经存根的spy对象是不可能或不切实际的。因此在使用spy时请考虑使用`doReturn`|`Answer`|`Throw()`存根方法族。例子：
 
    ```java
       List list = new LinkedList();
@@ -462,9 +462,9 @@ public class ArticleManagerTest {
     
    ```
 
-2. Mockito **不会**将调用委托传递给的真实实例，而是实际上创建了它的副本。因此，如果您保留真实实例并与之交互，则不要指望被监视的人会知道这些交互及其对真实实例状态的影响。相应的，当**unstubbed**（没有进行存根）的方法在**spy对象上**调用但**不在真实实例上时**，您将看不到对真实实例的任何影响。
+2. Mockito **不会**将调用传递给的真实实例，实际上创建了它的副本。因此，如果您保留真实实例并与之交互，则不要指望监视的人会知道这些交互及其对真实实例状态的影响。相应的，当**unstubbed**（没有进行存根）的方法在**spy对象上**调用但**不在真实实例上时**，您将看不到对真实实例的任何影响。
 
-3. 注意最后的方法。Mockito 不mock final 方法，所以底线是：当您监视真实对象时 + 尝试存根 final 方法 = 麻烦。您也将无法验证这些方法。
+3. 注意`final方法`。Mockito 不会 mock `final方法`，所以底线是：当您监视真实对象时 + 尝试存根 `final方法` = 麻烦。您也将无法验证这些方法。
 
 ### 14. 更改未[存根调用的默认返回值](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#defaultreturn)（自 1.7 起）
 
@@ -699,7 +699,7 @@ Mockito 现在允许为了验证而忽略存根。有时与`verifyNoMoreInteract
 
 可以在  [`ignoreStubs(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#ignoreStubs-java.lang.Object...-)的 javadoc 中找到高级示例和更多详细信息。
 
-### 26. [Mocking 细节](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocking_details)（2.2.x 改进）
+### 26. [mockingDetails](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocking_details)（2.2.x 改进）
 
 Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户和mock框架集成者很有用。
 
@@ -740,7 +740,7 @@ Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户�
 
 在[`AdditionalAnswers.delegatesTo(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/AdditionalAnswers.html#delegatesTo-java.lang.Object-)文档中查看更多信息。
 
-### 28. [`MockMaker`API](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_maker_plugin)（从 1.9.5 开始）
+### 28. [`MockMaker` API](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_maker_plugin)（从 1.9.5 开始）
 
 在谷歌 Android 人员的要求和补丁的驱动下，Mockito 现在提供了一个扩展点，允许替换`代理生成引擎`。默认情况下，Mockito 使用[Byte Buddy](https://github.com/raphw/byte-buddy) 创建动态代理。
 
