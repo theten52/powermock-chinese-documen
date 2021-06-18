@@ -338,7 +338,113 @@
 
     Mockito 不是依赖注入框架，不要指望这个快速实用程序可以注入复杂的对象图，无论是mocks/spies对象还是真实对象。
 
+## 存根方法调用
+
+- 定义存根方法的方式:
+
+  - Mockito.when(foo.sum()).thenXXX();
+
+    - 即对foo.sum()方法存根。
+    - 注意：
+      - foo对象应该是一个mock对象。spy对象不建议使用此方式进行存根。因为当代码执行到when(foo.sum())时。foo.sum()方法会首先执行。导致sum()方法的实际代码逻辑被执行。（sum()的实际代码逻辑是否会被执行要看被spy对象的类型，当被spy对象是一个mock对象或者接口时不会执行-这些类型也没有实际代码逻辑可以执行。当被spy对象一个具体的对象时则实际代码逻辑会被执行）
+
+  - Mockito.doXXX().when(foo).sum();
+
+    - 即对foo.sum()方法存根。
+    - 可以存根void方法。
+    - foo对象可以是一个mock对象，也可以是一个spy对象。
+
+  - Mockito.doXXX().when(foo.sum());
+
+    - 你会得到一个异常，即不应该使用这种方式！
+
+    - ```java
+      org.mockito.exceptions.misusing.UnfinishedStubbingException: 
+      Unfinished stubbing detected here:
+      -> at c.FooTest.verifyTest(FooTest.java:23)
+      
+      E.g. thenReturn() may be missing.
+      Examples of correct stubbing:
+          when(mock.isOk()).thenReturn(true);
+          when(mock.isOk()).thenThrow(exception);
+          doThrow(exception).when(mock).someVoidMethod();
+      Hints:
+       1. missing thenReturn()
+       2. you are trying to stub a final method, which is not supported
+       3. you are stubbing the behaviour of another mock inside before 'thenReturn' instruction is completed
+      ```
+
+- 定义返回值的方式：
+
+  - | then_xxx方法                       | do_XXX方法                                                   |                                                              |
+    | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+    | then(Answer\<?> answer)            | doAnswer(Answer answer)                                      | 返回值使用自定义的Answer策略。                               |
+    | thenAnswer(Answer\<?> answer)      | 同上                                                         | 同上。                                                       |
+    | thenReturn(T value)                | doReturn(Object toBeReturned)                                | 直接指定返回值。                                             |
+    | thenReturn(T value, T... values)   | doReturn(Object toBeReturned, Object... toBeReturnedNext)    | 直接指定返回值，可以定义多个返回值。第一次调用到存根方法返回第一个返回值。以此类推。超过返回值数量的调用返回参数的最后一个返回值。 |
+    | thenCallRealMethod()               | doCallRealMethod()                                           | 调用实际的代码逻辑。不指定返回值。                           |
+    | thenThrow(Throwable... throwables) | doThrow(Throwable... toBeThrown)                             | 调用到存根方法时抛出异常。                                   |
+    | 同上                               | doThrow(Class\<? extends Throwable> toBeThrown)              | 调用到存根方法时抛出异常。可以定义多个异常。第一次调用到存根方法返回第一个异常。以此类推。超过异常数量的调用返回参数的最后一个异常。 |
+    | 同上                               | doThrow(Class\<? extends Throwable> toBeThrown, Class\<? extends Throwable>... toBeThrownNext) | 同上。                                                       |
+    | 无                                 | doNothing()                                                  | void方法使用的存根方式。                                     |
+
+- 参数匹配器
+
+  - 
+
+- 示例
+  - TODO
+- 注意事项：
+  - TODO
+
 ## 验证方法调用
+
+### 验证方法：
+
+| 修饰符和类型                     | 方法和说明                                                   |
+| -------------------------------- | ------------------------------------------------------------ |
+| `static VerificationAfterDelay`  | `after(long millis)`在给定的毫秒数后将触发验证，允许测试异步代码。 |
+| `static VerificationMode`        | `atLeast(int minNumberOfInvocations)`允许至少 x 调用的验证。 |
+| `static VerificationMode`        | `atLeastOnce()`允许至少一次调用的验证。                      |
+| `static VerificationMode`        | `atMost(int maxNumberOfInvocations)`允许最多 x 次调用的验证。 |
+| `static VerificationMode`        | `atMostOnce()`允许最多一次调用的验证。                       |
+| `static VerificationMode`        | `calls(int wantedNumberOfInvocations)`允许按顺序进行非贪婪调用的验证。 |
+| `static Object[]`                | `ignoreStubs(Object... mocks)`为了验证，忽略给定mock的存根方法。 |
+| `static InOrder`                 | `inOrder(Object... mocks)`创建[`InOrder`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InOrder.html)对象，允许按顺序验证mock的对象。 |
+| `static LenientStubber`          | `lenient()`宽松存根，绕过“严格存根”验证（请参阅参考资料[`Strictness.STRICT_STUBS`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/Strictness.html#STRICT_STUBS)）。 |
+| `static VerificationMode`        | `never()` `times(0)`的别名，见[`times(int)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#times-int-) |
+| `static VerificationMode`        | `only()`允许检查给定的方法是否只调用一次。                   |
+| `static <T> void`                | `reset(T... mocks)`聪明 Mockito 用户几乎不使用此功能，因为他们知道这可能是测试不佳的迹象。 |
+| `static VerificationWithTimeout` | `timeout(long millis)`验证将一遍又一遍地触发，直到给定的毫秒数，允许测试异步代码。 |
+| `static VerificationMode`        | `times(int wantedNumberOfInvocations)`允许验证调用的确切次数。 |
+| `static void`                    | `validateMockitoUsage()`首先，如果有任何问题，我鼓励您阅读 Mockito FAQ： [https://github.com/mockito/mockito/wiki/FAQ](https://github.com/mockito/mockito/wiki/FAQ) |
+| `static <T> T`                   | `verify(T mock)`验证某些行为**发生过一次**。                 |
+| `static <T> T`                   | `verify(T mock, VerificationMode mode)`验证某些行为至少发生过一次/确切的次数/从未发生过。 |
+| `static void`                    | `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 |
+| `static void`                    | `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 |
+
+### 方法是否被调用/方法的调用的次数
+
+- `atLeast(int minNumberOfInvocations)`允许至少 x 调用的验证。 
+- `atLeastOnce()`允许至少一次调用的验证。                      
+- `atMost(int maxNumberOfInvocations)`允许最多 x 次调用的验证。 
+- `atMostOnce()`允许最多一次调用的验证。                
+- `never()` `times(0)`的别名，见[`times(int)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#times-int-) 。 
+- `only()`允许检查给定的方法是否只调用一次。                   
+- `times(int wantedNumberOfInvocations)`允许验证调用的确切次数。
+- `verify(T mock)`验证某些行为**发生过一次**。                 
+- `verify(T mock, VerificationMode mode)`验证某些行为至少发生过一次/确切的次数/从未发生过。 
+- `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 
+- `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 
+
+### 方法执行的时间
+
+- `after(long millis)`在给定的毫秒数后将触发验证，允许测试异步代码。
+-  `timeout(long millis)`验证将一遍又一遍地触发，直到给定的毫秒数，允许测试异步代码。
+
+示例：
+
+- TODO
 
 
 
@@ -400,7 +506,9 @@
 
 
 
-```java
+### 
+
+
 
         Mockito.after(100);
         Mockito.atLeast();
@@ -445,12 +553,3 @@
         Mockito.verifyZeroInteractions();
         Mockito.when()
         Mockito.withSettings()
-```
-
-
-
-### 方法是否被调用
-
-### 调用的返回值
-
-## 存根方法调用
