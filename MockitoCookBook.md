@@ -340,6 +340,115 @@
 
 ## 验证方法调用
 
+
+
+| 修饰符和类型                       | 方法和说明                                                   |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `static VerificationAfterDelay`    | `after(long millis)`在给定的毫秒数后将触发验证，允许测试异步代码。 |
+| `static VerificationMode`          | `atLeast(int minNumberOfInvocations)`允许至少 x 调用的验证。 |
+| `static VerificationMode`          | `atLeastOnce()`允许至少一次调用的验证。                      |
+| `static VerificationMode`          | `atMost(int maxNumberOfInvocations)`允许最多 x 次调用的验证。 |
+| `static VerificationMode`          | `atMostOnce()`允许最多一次调用的验证。                       |
+| `static VerificationMode`          | `calls(int wantedNumberOfInvocations)`允许按顺序进行非贪婪调用的验证。 |
+| `static void`                      | `clearAllCaches()`清除所有mock、类型缓存和检测。             |
+| `static <T> void`                  | `clearInvocations(T... mocks)`仅在存根不重要时使用此方法清除调用。 |
+| `static VerificationMode`          | `description(String description)`添加要在验证失败时打印的说明。 |
+| `static Stubber`                   | `doAnswer(Answer answer)`当你想要和通用的 [`Answer`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/stubbing/Answer.html) 一起存根void方法时使用`doAnswer()`。 |
+| `static Stubber`                   | `doCallRealMethod()`使用`doCallRealMethod()`时会调用（执行）真正的方法。 |
+| `static Stubber`                   | `doNothing()`使用`doNothing()`设置void方法什么也不做。       |
+| `static Stubber`                   | `doReturn(Object toBeReturned)`在那些极少数情况下，你不能使用[`when(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#when-T-)时，使用`doReturn()`。 |
+| `static Stubber`                   | `doReturn(Object toBeReturned, Object... toBeReturnedNext)`与[`doReturn(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#doReturn-java.lang.Object-)相同，但可以设置连续的返回值。 |
+| `static Stubber`                   | `doThrow(Class<? extends Throwable> toBeThrown)` 要存根void方法并抛出异常时使用`doThrow()`。 |
+| `static Stubber`                   | `doThrow(Class<? extends Throwable> toBeThrown, Class<? extends Throwable>... toBeThrownNext)`与[`doThrow(Class)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#doThrow-java.lang.Class-)相同，但可以设置连续的异常。 |
+| `static Stubber`                   | `doThrow(Throwable... toBeThrown)`要存根void方法并抛出异常时使用`doThrow()`,支持连续抛出异常。 |
+| `static MockitoFramework`          | `framework()`为高级用户或框架集成商提供。                    |
+| `static Object[]`                  | `ignoreStubs(Object... mocks)`为了验证，忽略给定mock的存根方法。 |
+| `static InOrder`                   | `inOrder(Object... mocks)`创建[`InOrder`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InOrder.html)对象，允许按顺序验证mock的对象。 |
+| `static LenientStubber`            | `lenient()`宽松存根，绕过“严格存根”验证（请参阅 参考资料[`Strictness.STRICT_STUBS`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/quality/Strictness.html#STRICT_STUBS)）。 |
+| `static <T> T`                     | `mock(Class<T> classToMock)`创建给定类或接口的mock对象。     |
+| `static <T> T`                     | `mock(Class<T> classToMock, Answer defaultAnswer)`使用指定的Answer策略创建mock以交互。 |
+| `static <T> T`                     | `mock(Class<T> classToMock, MockSettings mockSettings)`创建具有一些非标准设置的mock。 |
+| `static <T> T`                     | `mock(Class<T> classToMock, String name)`指定mock名称。      |
+| `static <T> MockedConstruction<T>` | `mockConstruction(Class<T> classToMock)`为给定类的所有构造器创建线程本地mock控制器。 |
+| `static <T> MockedConstruction<T>` | `mockConstruction(Class<T> classToMock, java.util.function.Function<MockedConstruction.Context,MockSettings> mockSettingsFactory)`为给定类的所有构造器创建线程本地mock控制器。 |
+| `static <T> MockedConstruction<T>` | `mockConstruction(Class<T> classToMock, java.util.function.Function<MockedConstruction.Context,MockSettings> mockSettingsFactory, MockedConstruction.MockInitializer<T> mockInitializer)`为为给定类的所有构造器创建线程本地mock控制器。 |
+| `static <T> MockedConstruction<T>` | `mockConstruction(Class<T> classToMock, MockedConstruction.MockInitializer<T> mockInitializer)`为给定类的所有构造器创建线程本地mock控制器。 |
+| `static <T> MockedConstruction<T>` | `mockConstruction(Class<T> classToMock, MockSettings mockSettings)`为给定类的所有构造器创建线程本地mock控制器。 |
+| `static <T> MockedConstruction<T>` | `mockConstruction(Class<T> classToMock, MockSettings mockSettings, MockedConstruction.MockInitializer<T> mockInitializer)`为给定类的所有构造器创建线程本地mock控制器。 |
+| `static <T> MockedConstruction<T>` | `mockConstructionWithAnswer(Class<T> classToMock, Answer defaultAnswer, Answer... additionalAnswers)`为给定类的所有构造器创建线程本地mock控制器。 |
+| `static MockingDetails`            | `mockingDetails(Object toInspect)`返回一个 MockingDetails 实例，该实例允许检查特定对象以获取 Mockito 相关信息。 |
+| `static MockitoSessionBuilder`     | `mockitoSession()` `MockitoSession` 是一个可选的、强烈推荐的功能，它通过消除样板代码和添加额外的验证来帮助推动更清晰的测试。 |
+| `static <T> MockedStatic<T>`       | `mockStatic(Class<T> classToMock)`为给定类或接口的所有静态方法创建线程本地mock控制器。 |
+| `static <T> MockedStatic<T>`       | `mockStatic(Class<T> classToMock, Answer defaultAnswer)`为给定类或接口的所有静态方法创建线程本地mock控制器。 |
+| `static <T> MockedStatic<T>`       | `mockStatic(Class<T> classToMock, MockSettings mockSettings)`为给定类或接口的所有静态方法创建线程本地mock控制器。 |
+| `static <T> MockedStatic<T>`       | `mockStatic(Class<T> classToMock, String name)`为给定类或接口的所有静态方法创建线程本地mock控制器。 |
+| `static VerificationMode`          | `never()` `times(0)`的别名，见[`times(int)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#times-int-) |
+| `static VerificationMode`          | `only()`允许检查给定的方法是否只调用一次。                   |
+| `static <T> void`                  | `reset(T... mocks)`聪明 Mockito 用户几乎不使用此功能，因为他们知道这可能是测试不佳的迹象。 |
+| `static <T> T`                     | `spy(Class<T> classToSpy)`请参阅 的文档[`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)。 |
+| `static <T> T`                     | `spy(T object)`创建真实对象的监视。                          |
+| `static VerificationWithTimeout`   | `timeout(long millis)`验证将一遍又一遍地触发，直到给定的毫秒数，允许测试异步代码。 |
+| `static VerificationMode`          | `times(int wantedNumberOfInvocations)`允许验证调用的确切次数。 |
+| `static void`                      | `validateMockitoUsage()`首先，如果有任何问题，我鼓励您阅读 Mockito FAQ：[https](https://github.com/mockito/mockito/wiki/FAQ) : [//github.com/mockito/mockito/wiki/FAQ](https://github.com/mockito/mockito/wiki/FAQ) |
+| `static <T> T`                     | `verify(T mock)`验证某些行为**发生过一次**。                 |
+| `static <T> T`                     | `verify(T mock, VerificationMode mode)`验证某些行为至少发生过一次/确切的次数/从未发生过。 |
+| `static void`                      | `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 |
+| `static void`                      | `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 |
+| `static void`                      | `verifyZeroInteractions(Object... mocks)`已弃用。 从 3.0.1 开始。请将您的代码迁移到[`verifyNoInteractions(Object...)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verifyNoInteractions-java.lang.Object...-) |
+| `static <T> OngoingStubbing<T>`    | `when(T methodCall)`创建方法的存根。                         |
+| `static MockSettings`              | `withSettings()`允许使用其他mock设置进行mock创建。           |
+
+
+
+```java
+
+        Mockito.after(100);
+        Mockito.atLeast();
+        Mockito.atLeastOnce();
+        Mockito.atMost();
+        Mockito.atMostOnce();
+        Mockito.calls();
+        Mockito.clearAllCaches();
+        Mockito.clearInvocations();
+        Mockito.description();
+        Mockito.doAnswer();
+        Mockito.doCallRealMethod();
+        Mockito.doNothing();
+        Mockito.doReturn();
+        Mockito.doReturn(null,null);
+        Mockito.doThrow(Object.class);
+        Mockito.doThrow(null,null);
+        Mockito.doThrow(new Exception())
+        Mockito.framework()
+        Mockito.ignoreStubs()
+        Mockito.inOrder()
+        Mockito.lenient()
+        Mockito.mock(null)
+        Mockito.mock(null,null)
+        Mockito.mock(null, new MockSettings())
+        Mockito.mock(Object.class,"xx")
+        Mockito.mockConstruction(6)
+        Mockito.mockConstructionWithAnswer()
+        Mockito.mockingDetails()
+        Mockito.mockitoSession()
+        Mockito.mockStatic(4)
+        Mockito.never()
+        Mockito.only()
+        Mockito.reset();
+        Mockito.spy(2)
+        Mockito.timeout()
+        Mockito.times()
+        Mockito.validateMockitoUsage();
+        Mockito.verify(2)
+        Mockito.verifyNoInteractions();
+        Mockito.verifyNoMoreInteractions();
+        Mockito.verifyZeroInteractions();
+        Mockito.when()
+        Mockito.withSettings()
+```
+
+
+
 ### 方法是否被调用
 
 ### 调用的返回值
