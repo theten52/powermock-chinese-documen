@@ -88,10 +88,17 @@
   - 默认情况下，对于所有方法的返回值，mock 视情况而定将返回 null、原始/原始包装值或空集合。例如 int/Integer 返回0，布尔值/布尔值返回false。我们可以在创建mock时通过指定默认的Answer策略来更改此返回。支持的Answer策略：
   
     - Mockito.RETURNS_DEFAULTS;
+      - 这个实现首先尝试全局配置，如果没有全局配置，那么它将使用一个返回0、空集合、空值等的默认Answer。
     - Mockito.RETURNS_DEEP_STUBS;
+      - 链式调用避免空指针。
     - Mockito.RETURNS_MOCKS;
+      - 首先尝试返回普通值(0、空集合、空字符串等)，然后尝试返回mock。如果返回类型不能被mock(例如final)，则返回普通的null。
     - Mockito.RETURNS_SELF;
+      - 允许Builder 的mock在调用方法时返回其本身，该方法返回的Type等于类或父类。 请记住，这个Answer使用方法的返回类型。如果此类型可分配给mock类，则它将返回mock。因此，如果您有一个返回超类(例如Object)的方法，它将匹配并返回mock。
     - Mockito.RETURNS_SMART_NULLS;
+      - 此实现在处理遗留代码时很有帮助。非存根方法通常返回null。如果代码使用非存根调用返回的对象，则会得到NullPointerException。这个Answer的实现返回SmartNull而不是null。SmartNull给出了比NPE更好的异常消息，因为它指出了调用无存根方法的那一行。您只需单击堆栈即可跟踪。 SmartNull首先尝试返回普通值(0，空集合，空字符串等)，然后尝试返回SmartNull。如果返回类型是final，则返回纯null。 在Mockito 4.0.0中，ReturnsSmartNulls可能是默认的返回值策略。
+    - Mockito.CALLS_REAL_METHODS
+      - 一个调用实际方法(用于部分mock)的Answer。
 
 ### 创建spy对象
 
@@ -149,10 +156,13 @@
 
 - 注意事项：
 
-  - 与mock对象的区别：mock对象默认是返回类型的空值。而spy对象是默认执行实际方法并返回。
+  - 与mock对象的区别：
 
+    - mock对象的默认返回类型的空值（可以配置返回策略），不执行实际方法。
+    - spy对象是默认执行实际方法并返回。
+  
   - 有时将`when(Object)`用于已经存根的spy对象是不可能或不切实际的。因此在使用spy时请考虑使用`doReturn`|`Answer`|`Throw()`存根方法族。例子：
-
+  
     ```java
        List list = new LinkedList();
        List spy = spy(list);
@@ -164,9 +174,9 @@
        doReturn("foo").when(spy).get(0);
      
     ```
-
+  
   - Mockito **不会**将调用传递给的真实实例，实际上创建了它的副本。因此，如果您保留真实实例并与之交互，则不要指望监视的人会知道这些交互及其对真实实例状态的影响。相应的，当**unstubbed**（没有进行存根）的方法在**spy对象上**调用但**不在真实实例上时**，您将看不到对真实实例的任何影响。
-
+  
   - 注意`final方法`。Mockito 不会 mock `final方法`，所以底线是：当您监视真实对象时 + 尝试存根 `final方法` = 麻烦。您也将无法验证这些方法
 
 ### 创建被测对象
