@@ -121,7 +121,7 @@ Mockito 库允许创建mock对象，验证方法调用用和存根方法调用�
 - 一旦被存根，该方法将始终返回一个存根值，无论它被调用多少次。
 - 最后的存根更重要 - 当您多次用相同的参数存根相同的方法时。换句话说：**存根的顺序**很**重要，**但它只是很少有意义，例如当存根完全相同的方法调用或有时使用参数匹配器时等。
 
-#### 3.参数匹配
+### 3.参数匹配
 
 Mockito验证参数值使用自然java风格。即通过使用`equals()`方法。有时，当需要额外的灵活性时，您可以使用参数匹配器：
 
@@ -200,7 +200,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
 
 **times(1) 是默认值。**因此可以省略显式使用 times(1) 。
 
-#### 5.存根有异常的void方法
+### 5.存根有异常的void方法
 
 ```java
 
@@ -212,7 +212,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
 
 在 [第 12 节中](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#12)阅读更多关于`doThrow()`|`doAnswer()`方法族的信息。
 
-#### 6.调用顺序验证
+### 6.调用顺序验证
 
 ```java
  // A.必须以特定顺序调用其方法的单个mock对象
@@ -251,7 +251,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
 
 此外，您可以创建一个 InOrder 对象，仅传递与有序验证相关的moc k对象。
 
-#### 7.确保在mock对象从未发生交互
+### 7.确保在mock对象从未发生交互
 
 ```java
 
@@ -268,7 +268,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
  verifyZeroInteractions(mockTwo, mockThree);
 ```
 
-#### 8.寻找多余的调用
+### 8.寻找多余的调用
 
 ```java
 
@@ -286,7 +286,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
 
 另请参阅[`never()`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#never--)- 它更明确并且能很好地传达意图。
 
-#### 9.mocks的简单创建方式--[`@Mock`注解](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_annotation)
+### 9.mocks的简单创建方式--[`@Mock`注解](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_annotation)
 
 - 最大限度地减少重复的mock创建代码。
 - 使测试类更具可读性。
@@ -318,7 +318,7 @@ public class ArticleManagerTest {
 
 在此处阅读更多信息： [`MockitoAnnotations`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoAnnotations.html)
 
-#### 10. [存根连续调用](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#stubbing_consecutive_calls)（iterator-style stubbing）
+### 10. [存根连续调用](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#stubbing_consecutive_calls)（iterator-style stubbing）
 
 有时我们需要为同一个方法调用使用不同的返回值/异常进行存根。典型的用例可能是mock迭代器。Mockito 的原始版本没有这个功能来促进简单的mock。例如，可以使用[`Iterable`](https://docs.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true)或简单地集合来代替迭代器。这些提供了自然的存根方式（例如使用真实的集合）。不过，在极少数情况下，存根连续调用可能很有用：
 
@@ -356,7 +356,7 @@ public class ArticleManagerTest {
  
 ```
 
-#### 11.[使用回调进行存根](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#answer_stubs)
+### 11.[使用回调进行存根](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#answer_stubs)
 
 允许使用[`Answer`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/stubbing/Answer.html)接口进行存根。
 
@@ -377,7 +377,7 @@ public class ArticleManagerTest {
  
 ```
 
-#### 12. [`doReturn()`| `doThrow()`| `doAnswer()`| `doNothing()`| `doCallRealMethod()`方法族](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#do_family_methods_stubs)
+### 12. [`doReturn()`| `doThrow()`| `doAnswer()`| `doNothing()`| `doCallRealMethod()`方法族](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#do_family_methods_stubs)
 
 存根 void 方法需要一种和[`when(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#when-T-)不同的方法，因为编译器不喜欢`when()`括号内使用返回 void 的方法......
 
@@ -446,7 +446,7 @@ spy应该**谨慎**使用，例如在处理遗留代码时偶尔使用。
  
 ```
 
-#### 监视真实对象的重要问题：
+**监视真实对象的重要问题**：
 
 1. 有时将`when(Object)`用于已经存根的spy对象是不可能或不切实际的。因此在使用spy时请考虑使用`doReturn`|`Answer`|`Throw()`存根方法族。例子：
 
@@ -489,7 +489,7 @@ Mockito 通过使用`equals()`方法实现了自然的 Java 风格验证参数�
    assertEquals("John", argument.getValue().getName());
 ```
 
-**警告：**建议将 ArgumentCaptor 与验证一起使用，**但不要**与存根一起使用。使用带有存根的 ArgumentCaptor 可能会降低测试的可读性，因为 captor 是在断言（又名验证或“then”）块之外创建的。它还会降低缺陷定位，因为如果未调用存根方法，则不会捕获任何参数。
+**警告**：建议将 ArgumentCaptor 与验证一起使用，**但不要**与存根一起使用。使用带有存根的 ArgumentCaptor 可能会降低测试的可读性，因为 captor 是在断言（又名验证或“then”）块之外创建的。它还会降低缺陷定位，因为如果未调用存根方法，则不会捕获任何参数。
 
 在某种程度上 ArgumentCaptor 与自定义参数匹配器有关（请参阅[`ArgumentMatcher`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatcher.html)类的javadoc ）。这两种技术都可用于确保将某些参数传递给mock对象。但是，在以下情况下，ArgumentCaptor 可能更适合：
 
