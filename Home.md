@@ -1,4 +1,4 @@
-![PowerMock](https://github.com/powermock/powermock/blob/release/2.x/powermock.png)
+![PowerMock](./powermock.png)
 
 * [开始](Getting-Started)
 * [下载](Downloads)
