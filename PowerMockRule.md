@@ -1,10 +1,10 @@
-# Bootstrapping using a JUnit Rule #
+# 使用 JUnit Rule 引导程序 #
 
-```
-   Feature avaliable since PowerMock 1.4
+```text
+从 PowerMock 1.4 时功能可用。
 ```
 
-Since version 1.4 it's possible to bootstrap PowerMock using a [JUnit Rule](http://www.infoq.com/news/2009/07/junit-4.7-rules) instead of using the PowerMockRunner and the RunWith annotation. This allows you to use other JUnit runners while still benefiting from PowerMock's functionality. You do this by specifying:
+从 1.4 版开始，可以使用 [JUnit Rule](http://www.infoq.com/news/2009/07/junit-4.7-rules) 而不是使用 PowerMockRunner 和 RunWith 注解来引导 PowerMock 。这允许您在使用其他 JUnit 运行程序的同时仍然受益于 PowerMock 的功能。您可以通过指定：
 
 ```java
 @PrepareForTest(X.class);
@@ -17,8 +17,8 @@ public class MyTest {
 }
 ```
 
-## Using PowerMockRule with Maven ##
-You need to depend on these projects:
+## 和 Maven 一起使用 PowerMockRule ##
+你需要依赖这些项目：
 
 ```xml
 <dependency>
@@ -35,7 +35,7 @@ You need to depend on these projects:
 </dependency>
 ```
 
-You can also replace `powermock-classloading-xstream` with an Objenesis version:
+您还可以替换`powermock-classloading-xstream`为 Objenesis 版本：
 
 ```xml
 <dependency>
@@ -46,16 +46,16 @@ You can also replace `powermock-classloading-xstream` with an Objenesis version:
 </dependency>
 ```
 
-However this version is not as stable as the xstream version but it does not require any additional dependencies.
+然而，这个版本不如 xstream 版本稳定，但它不需要任何额外的依赖项。
 
-**Warning**: Use version PowerMock 1.4 (or later) since prior to this version the rule did not actually execute any test methods (but it looked like it did).
+**警告**：使用版本 PowerMock 1.4（或更高版本），因为在此版本之前，该Rule实际上并未执行任何测试方法（但看起来确实如此）。
 
-## Using PowerMockRule without Maven
+## 不和 Maven 一起使用 PowerMockRule
 
-You need to download <a href='http://repo1.maven.org/maven2/org/powermock/powermock-module-junit4-rule/2.0.2/powermock-module-junit4-rule-2.0.2.jar'>powermock-module-junit4-rule</a>, <a href='http://repo1.maven.org/maven2/org/powermock/powermock-classloading-base/2.0.2/powermock-classloading-base-2.0.2.jar'>powermock-classloading-base</a> and one of<br>
-<a href='http://repo1.maven.org/maven2/org/powermock/powermock-classloading-xstream/2.0.2/powermock-classloading-xstream-2.0.2.jar'>powermock-classloading-xstream</a> or <a href='http://repo1.maven.org/maven2/org/powermock/powermock-classloading-objenesis/2.0.2/powermock-classloading-objenesis-2.0.2.jar'>powermock-classloading-objenesis</a> and put it in your classpath.<br>
+您需要下载[powermock-module-junit4-rule](http://repo1.maven.org/maven2/org/powermock/powermock-module-junit4-rule/2.0.2/powermock-module-junit4-rule-2.0.2.jar)、[powermock-classloading-base](http://repo1.maven.org/maven2/org/powermock/powermock-classloading-base/2.0.2/powermock-classloading-base-2.0.2.jar)和
+[powermock-classloading-xstream](http://repo1.maven.org/maven2/org/powermock/powermock-classloading-xstream/2.0.2/powermock-classloading-xstream-2.0.2.jar)或[powermock-classloading-objenesis 之一](http://repo1.maven.org/maven2/org/powermock/powermock-classloading-objenesis/2.0.2/powermock-classloading-objenesis-2.0.2.jar)，并将其放入您的类路径中。
 
-## References ##
+## 参考 ##
 
-* [Mockito Examples](https://github.com/powermock/powermock/tree/master/tests/mockito/junit4-rule-xstream/src/test/java/samples/powermockito/junit4/rule/xstream)
-* Spring Integration Test with PowerMock and Mockito [example](https://github.com/jayway/powermock/tree/master/examples/spring-mockito).
+* [Mockito 示例](https://github.com/powermock/powermock/tree/master/tests/mockito/junit4-rule-xstream/src/test/java/samples/powermockito/junit4/rule/xstream)
+* 使用 PowerMock 和 Mockito[示例进行](https://github.com/jayway/powermock/tree/master/examples/spring-mockito)Spring 集成测试。

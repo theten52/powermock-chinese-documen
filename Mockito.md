@@ -1,4 +1,4 @@
-# 在Mockito中使用PowerMock
+# 和Mockito一起使用PowerMock
 
 
 
@@ -26,7 +26,7 @@
 1. [Mockito 1.7](Mockito-Usage-Legacy)
 
 ## 介绍 ##
-事实上，PowerMock提供了一个名为“PowerMockito”的类，用于创建mock/对象/类并开始验证和期望（一个行为/调用或者返回值），您仍然可以使用Mockito设置和验证期望的所有其他内容（例如times()，anyInt()）。
+事实上，PowerMock提供了一个名为“PowerMockito”的类，用于创建mock对象/类并开始验证和期望（一个行为/调用或者返回值），您仍然可以使用Mockito设置和验证期望的所有其他内容（例如times()，anyInt()）。
 
 所有的用法需要`@RunWith(PowerMockRunner.class)`，并在类上标识`@PrepareForTest`注解。
 

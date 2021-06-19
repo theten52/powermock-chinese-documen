@@ -1,13 +1,15 @@
-# Bootstrapping using a Java agent #
+# 使用 Java 代理引导启动
 
-```
-   Feature avaliable since PowerMock 1.4.9
+```text
+   从 PowerMock 1.4.9 时功能可用
 ```
 
-Since version 1.4.9 it's possible to bootstrap PowerMock using a Java agent instead of using the PowerMockRunner and the RunWith annotation. This allows you to use e.g. other JUnit runners while still benefiting from PowerMock's functionality. The main difference between the agent based bootstrapper and the classloading based bootstrapper is that you don't run into classloading issues when using XML frameworks etc. It's recommended to use this way of bootstrapping when using PowerMock for integration testing larger parts of a system.
+从 1.4.9 版本开始，可以使用 Java 代理而不是使用 PowerMockRunner 和 RunWith 注解来引导 PowerMock。这允许您使用例如其他 JUnit 运行程序，同时仍然受益于 PowerMock 的功能。基于代理的引导程序和基于类加载的引导程序之间的主要区别在于，在使用 XML 框架等时不会遇到类加载问题。建议在使用 PowerMock 对系统的较大部分进行集成测试时使用这种引导方式。
 
 ## JUnit ##
 To bootstrap the Agent in JUnit you can use the `PowerMockRule` in the `powermock-module-junit4-rule-agent` project. For example:
+
+要在 JUnit 中引导代理，您可以在`powermock-module-junit4-rule-agent`项目中使用`PowerMockRule` 。例如：
 
 ```java
 @PrepareForTest(X.class);
@@ -20,7 +22,7 @@ public class MyTest {
 }
 ```
 
-In some cases it may be necessary to manually start the agent before the test is being run. You can do that using:
+在某些情况下，可能需要在运行测试之前手动启动代理。你可以使用：
 
 ```java
 public class MyTest {
@@ -33,6 +35,8 @@ public class MyTest {
 ```
 
 It's recommended that you put `powermock-module-junit4-rule-agent` _before_ junit in the classpath.
+
+建议您将`powermock-module-junit4-rule-agent` *在JUnit之前*放在类路径中。
 
 ## TestNG ##
 To bootstrap the Agent in TestNG you should extend from `PowerMockTestCase` in the `powermock-module-testng-common` project and you need to have the jar file from `powermock-module-testng-agent` in classpath. For example:
@@ -65,8 +69,8 @@ public class SomeTest extends PowerMockTestCase {
 </dependency>
 ```
 
-### Eager loading of the PowerMock Agent in Maven ###
-In some cases (such as mocking final classes) it may be necessary to load the PowerMock agent eagerly in Maven in order for the tests to work in Surefire. If you experience this please add the following to your pom.xml:
+### 在 Maven 中预先加载 PowerMock 代理 ###
+在某些情况下（例如mock最终类），可能需要在 Maven 中急切地加载 PowerMock 代理，以便测试在 Surefire 中工作。如果您遇到这种情况，请将以下内容添加到您的 pom.xml 中：
 
 ```xml
 <build>
@@ -85,30 +89,30 @@ In some cases (such as mocking final classes) it may be necessary to load the Po
         </plugins>
 </build>  
 ```
-## Non-Maven users ##
+## 非 Maven 用户 ##
 You need to download [powermock-java-agent](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-javaagent/2.0.2/powermock-module-javaagent-2.0.2.jar) ([source](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-javaagent/2.0.2/powermock-module-javaagent-2.0.2-sources.jar), [javadoc](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-javaagent/2.0.2/powermock-module-javaagent-2.0.2-javadoc.jar)) and either [powermock-module-junit4-rule-agent](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-junit4-rule-agent/2.0.2/powermock-module-junit4-rule-agent-2.0.2.jar) ([sources](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-junit4-rule-agent/2.0.2/powermock-module-junit4-rule-agent-2.0.2-sources.jar), [javadoc](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-junit4-rule-agent/2.0.2/powermock-module-junit4-rule-agent-2.0.2-javadoc.jar)) if using JUnit or [powermock-module-testng-agent](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-testng-agent/2.0.2/powermock-module-testng-agent-2.0.2.jar) ([sources](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-testng-agent/2.0.2/powermock-module-testng-agent-2.0.2-sources.jar), [javadoc](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-testng-agent/2.0.2/powermock-module-testng-agent-2.0.2-javadoc.jar)) if using TestNG.
+
+你需要下载 [powermock-java-agent](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-javaagent/2.0.2/powermock-module-javaagent-2.0.2.jar) ([source](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-javaagent/2.0.2/powermock-module-javaagent-2.0.2-sources.jar), [javadoc](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-javaagent/2.0.2/powermock-module-javaagent-2.0.2-javadoc.jar)) ；如果使用JUnit，还需要[powermock-module-junit4-rule-agent](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-junit4-rule-agent/2.0.2/powermock-module-junit4-rule-agent-2.0.2.jar) ([sources](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-junit4-rule-agent/2.0.2/powermock-module-junit4-rule-agent-2.0.2-sources.jar), [javadoc](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-junit4-rule-agent/2.0.2/powermock-module-junit4-rule-agent-2.0.2-javadoc.jar)) 如果使用TestNG，还需要[powermock-module-testng-agent](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-testng-agent/2.0.2/powermock-module-testng-agent-2.0.2.jar) ([sources](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-testng-agent/2.0.2/powermock-module-testng-agent-2.0.2-sources.jar), [javadoc](http://search.maven.org/remotecontent?filepath=org/powermock/powermock-module-testng-agent/2.0.2/powermock-module-testng-agent-2.0.2-javadoc.jar))。
 
 ## JUnit ##
 
-#### Eager loading of the PowerMock Agent with JUnit in Eclipse ####
+#### 在 Eclipse 中使用 JUnit 预先加载 PowerMock 代理
 
-To load the PowerMock agent eagerly with Eclipse and JUnit you must first go into the _Run Configuration dialog_ and add the following JVM
-parameter:
+要使用 Eclipse 和 JUnit 急切地加载 PowerMock 代理，您必须首先进入“*运行配置”对话框*并添加以下 JVM 参数：
 
 ```bash
 -javaagent: <jarpath>/powermock-module-javaagent-2.0.2.jar
 ```
 
-Next must also make sure to put powermock-module-javaagent-2.0.2.jar
-in the Run Configuration's classpath, _before the
-default classpath_ (this is to ensure the agent loads before junit).
+接下来，您还必须确保将 powermock-module-javaagent-2.0.2.jar 放在运行配置的类路径中，*在默认类*路径*之前*（这是为了确保代理在 junit 之前加载）。
 
 
-## Current known limitations ##
-  * No way of suppressing static initializers
-  * Cannot change value of static final fields
+## 当前的已知的限制 ##
+  * 无法抑制静态初始化代码块
+  * 无法更改静态final字段的值
 
-## References ##
+## 参考 ##
 
-* [JUnit Examples](https://github.com/powermock/powermock/tree/master/tests/mockito/junit4-agent/src/test/java/samples/powermockito/junit4/agent)
-* Spring Integration Test with PowerMock and Mockito [example](https://github.com/jayway/powermock/tree/master/examples/spring-mockito-xml-agent).
+* [JUnit 示例](https://github.com/powermock/powermock/tree/master/tests/mockito/junit4-agent/src/test/java/samples/powermockito/junit4/agent)
+* 使用 PowerMock 和 Mockito[示例](https://github.com/jayway/powermock/tree/master/examples/spring-mockito-xml-agent)进行Spring 集成测试。
+

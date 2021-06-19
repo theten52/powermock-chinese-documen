@@ -1,7 +1,7 @@
-# Using @PowerMockRunnerDelegate  #
+# 使用 @PowerMockRunnerDelegate  #
 
 ```text
-   功能从PowerMock 1.6.0可用
+   从PowerMock 1.6.0可用的功能。
 ```
 
 从PowerMock 1.6.0版本以来，支持将测试执行委托给另一个JUnit runner而不使用JUnit Rule. 这将实际的测试执行留给您选择的另一个runner。 例如，测试可以委托给“SpringJunit4ClassRunner”，“Parameterized”或“Enclosed”runner。 用法示例：

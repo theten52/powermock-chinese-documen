@@ -1,12 +1,12 @@
-# 抑制不需要的行为 #
+# 抑制不想要的行为 #
 
 ## 总览 ##
-  1. 在测试用例的类上使用 `@RunWith(PowerMockRunner.class)`注解.
+  1. 在测试用例的类上使用 `@RunWith(PowerMockRunner.class)`注解。
   1. 在测试用例的类上结合使用`@PrepareForTest(ClassWithEvilParentConstructor.class)`和`suppress(constructor(EvilParent.class))`注解，以禁止调用EvilParent类的所有构造函数。
   1. 使用`Whitebox.newInstance(ClassWithEvilConstructor.class)` 方法去实例化一个类而无须调用其构造函数。
   1. 使用`@SuppressStaticInitializationFor("org.mycompany.ClassWithEvilStaticInitializer")`注解移除类`org.mycompany.ClassWithEvilStaticInitializer`的静态初始化器。
   1. 在类上使用 `@PrepareForTest(ClassWithEvilMethod.class)` 注解结合`suppress(method(ClassWithEvilMethod.class, "methodName"))` 去抑制类ClassWithEvilMethod中的 "methodName" 方法。
-  1. 在类上使用 `@PrepareForTest(ClassWithEvilField.class)` 注解结合 `suppress(field(ClassWithEvilField.class, "fieldName"))` 去抑制类 ClassWithEvilField 中的"fieldName" 字段.
+  1. 在类上使用 `@PrepareForTest(ClassWithEvilField.class)` 注解结合 `suppress(field(ClassWithEvilField.class, "fieldName"))` 去抑制类 ClassWithEvilField 中的"fieldName" 字段。
 
 您可以在此处找到成员修改和成员匹配器方法：
   * `org.powermock.api.support.membermodification.MemberModifier`
