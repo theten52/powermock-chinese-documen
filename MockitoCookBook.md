@@ -1,6 +1,6 @@
 # Mockito 使用手册
 
-## 概述
+## 一：概述
 
 ## 创建mock/spy对象
 
@@ -338,23 +338,38 @@
 
     Mockito 不是依赖注入框架，不要指望这个快速实用程序可以注入复杂的对象图，无论是mocks/spies对象还是真实对象。
 
-## 存根方法调用
+### 示例
+
+- 9.mocks的简单创建方式--[`@Mock`注解](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_annotation)
+- 16.[真正的部分mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#partial_mocks)（自 1.8.0 起）
+- 20.新注释：[`@Captor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captor_annotation), [`@Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy_annotation), [`@InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#injectmocks_annotation)（自 1.8.3 起）
+- 23.[使用`@Spies`， `@InjectMocks`自动实例化对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#automatic_instantiation)并具有[良好的构造函数注入](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#constructor_injection)（1.9.0以后）
+- 30.[监视或mock抽象类（自 1.10.12 起，在 2.7.13 和 2.7.14 中进一步增强）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spying_abstract_classes)
+- 32.[对深存根（deep stubs）更好的通用支持（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#better_generic_support_with_deep_stubs)
+- 33.[Mockito JUnit rule（自 1.10.17 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_junit_rule)
+- 37.[Java 8 自定义Answer支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Custom_Answers)（自 2.1.0 起）
+- 38.[元数据和泛型类型的保留](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Meta_Data_And_Generics)（自 2.1.0 起）
+- 39.[mock final类、枚举和 final方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Mocking_Final)（自 2.1.0 起）
+- 48.[mock静态方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#static_mocks)（自 3.4.0 起）
+- 49.[mock对象构造](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocked_construction)（自 3.5.0 起）
+
+## 二：存根方法调用
 
 - 定义存根方法的方式:
 
-  - Mockito.when(foo.sum()).thenXXX();
+  - Mockito.when(foo.sum()).thenXXX(...);
 
     - 即对foo.sum()方法存根。
     - 注意：
       - foo对象应该是一个mock对象。spy对象不建议使用此方式进行存根。因为当代码执行到when(foo.sum())时。foo.sum()方法会首先执行。导致sum()方法的实际代码逻辑被执行。（sum()的实际代码逻辑是否会被执行要看被spy对象的类型，当被spy对象是一个mock对象或者接口时不会执行-这些类型也没有实际代码逻辑可以执行。当被spy对象一个具体的对象时则实际代码逻辑会被执行）
 
-  - Mockito.doXXX().when(foo).sum();
+  - Mockito.doXXX(...).when(foo).sum();
 
     - 即对foo.sum()方法存根。
     - 可以存根void方法。
     - foo对象可以是一个mock对象，也可以是一个spy对象。
 
-  - Mockito.doXXX().when(foo.sum());
+  - Mockito.doXXX(....).when(foo.sum());
 
     - 你会得到一个异常，即不应该使用这种方式！
 
@@ -390,16 +405,70 @@
 
 - 参数匹配器
 
-  - 
+  - 参数匹配器一般使用在存根方法的调用时。
+  - 参数匹配器也可以使用在方法的验证时。
+  - example-3：参数匹配
+    - 有关于参数匹配器的介绍
 
 - 示例
-  - TODO
+  - example-2：添加一些存根（stub）：指定mock对象方法调用的返回值
+    - 3个注意事项
+  - 5.存根有异常的void方法
+  - 10.[存根连续调用](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#stubbing_consecutive_calls)（iterator-style stubbing）
+  - 11.[使用回调进行存根](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#answer_stubs)
+  - 12.[`doReturn()`| `doThrow()`| `doAnswer()`| `doNothing()`| `doCallRealMethod()`方法族](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#do_family_methods_stubs)
+  - 13.[监视真实对象：使用spy](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy)
+    - 包含了一些spy使用时的提示
+  - 14.更改未[存根调用的默认返回值](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#defaultreturn)（自 1.7 起）
+  - 16.[真正的部分mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#partial_mocks)（自 1.8.0 起）
+    - 使用spy或者mock。
+    - thenCallRealMethod()方法。
+
 - 注意事项：
   - TODO
 
-## 验证方法调用
+## 三：验证方法调用
 
 ### 验证方法：
+
+### 方法是否被调用/方法的调用的次数
+
+- `atLeast(int minNumberOfInvocations)`允许至少 x 调用的验证。 
+- `atLeastOnce()`允许至少一次调用的验证。                      
+- `atMost(int maxNumberOfInvocations)`允许最多 x 次调用的验证。 
+- `atMostOnce()`允许最多一次调用的验证。                
+- `never()` `times(0)`的别名，见[`times(int)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#times-int-) 。 
+- `only()`允许检查给定的方法是否只调用一次。                   
+- `times(int wantedNumberOfInvocations)`允许验证调用的确切次数。
+- `verify(T mock)`验证某些行为**发生过一次**。                 
+- `verify(T mock, VerificationMode mode)`验证某些行为至少发生过一次/确切的次数/从未发生过。 
+- `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 
+- `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 
+
+### 方法执行的时间
+
+- `after(long millis)`在给定的毫秒数后将触发验证，允许测试异步代码。
+-  `timeout(long millis)`验证将一遍又一遍地触发，直到给定的毫秒数，允许测试异步代码。
+
+### 调用顺序验证
+
+- `calls(int wantedNumberOfInvocations)`允许按顺序进行非贪婪调用的验证。
+- `inOrder(Object... mocks)`创建[`InOrder`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InOrder.html)对象，允许按顺序验证mock的对象。
+
+### 示例：
+
+- example-1：验证mock对象的行为（方法是否被调用以及调用返回值）
+- 4：验证确切的调用次数/至少调用x次/从未调用
+- 6：调用顺序验证
+- 7.确保在mock对象从未发生交互
+- 8.寻找多余的调用
+- 15.为进一步的断言[捕获参数](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captors)（自 1.8.0 起）
+  - 一些关于捕获参数进行断言的警告。
+- 22.[超时验证](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verification_timeout)（自 1.8.5 起）
+- 35.[自定义验证失败信息](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Custom_verification_failure_message)（自 2.1.0 起）
+- 40.[ 使用“更严格”的 Mockito 提高生产力和编写更简明的测试](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#strict_mockito)（自 2.+ 起）
+
+### 验证方法参考：
 
 | 修饰符和类型                     | 方法和说明                                                   |
 | -------------------------------- | ------------------------------------------------------------ |
@@ -423,30 +492,53 @@
 | `static void`                    | `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 |
 | `static void`                    | `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 |
 
-### 方法是否被调用/方法的调用的次数
+# 四：Mockito中有用的操作
 
-- `atLeast(int minNumberOfInvocations)`允许至少 x 调用的验证。 
-- `atLeastOnce()`允许至少一次调用的验证。                      
-- `atMost(int maxNumberOfInvocations)`允许最多 x 次调用的验证。 
-- `atMostOnce()`允许最多一次调用的验证。                
-- `never()` `times(0)`的别名，见[`times(int)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#times-int-) 。 
-- `only()`允许检查给定的方法是否只调用一次。                   
-- `times(int wantedNumberOfInvocations)`允许验证调用的确切次数。
-- `verify(T mock)`验证某些行为**发生过一次**。                 
-- `verify(T mock, VerificationMode mode)`验证某些行为至少发生过一次/确切的次数/从未发生过。 
-- `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 
-- `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 
+- 17.[重置mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#resetting_mocks)（自 1.8.0 起）
 
-### 方法执行的时间
+  - Mockito会忘掉了所有的交互和存根。
 
-- `after(long millis)`在给定的毫秒数后将触发验证，允许测试异步代码。
--  `timeout(long millis)`验证将一遍又一遍地触发，直到给定的毫秒数，允许测试异步代码。
+- 18.[故障排除和验证框架的使用](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#framework_validation)（自 1.8.0 起）
 
-示例：
+- 19.[行为驱动开发的别名](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#bdd_mockito)（自 1.8.0 起）
 
-- TODO
+- 20.[可序列化的mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#serializable_mocks)（自 1.8.1 起）
 
+- 24.[单行存根](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#one_liner_stub)（自 1.9.0 起）
 
+- 25.[忽略存根的验证](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#ignore_stubs_verification)（自 1.9.0 起）
+
+- 26.[mockingDetails](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocking_details)（2.2.x 改进）
+
+- 27.[将调用委托给真实对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#delegating_call_to_real_instance)（自 1.9.5 起）
+
+- 28.[`MockMaker` API](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_maker_plugin)（从 1.9.5 开始）
+
+- 29.[BDD 风格验证](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#BDD_behavior_verification)（自 1.10.0 起）
+
+- 31.[Mockito 模拟可以跨类加载器*序列化*/*反序列化*（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#serilization_across_classloader)
+
+- 34.[切换插件的*启用*或*禁用*（15年10月1日以来）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#plugin_switch)
+
+- 36.[Java 8 Lambda 匹配器支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Lambda_Matching)（自 2.1.0 起）
+
+- 41.[ 用于框架集成的高级公共 API（自 2.10.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#framework_integrations_api)
+
+- 42.[ 用于集成的新 API：监听验证开始事件（自 2.11.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#verifiation_started_listener)
+
+- 43.[ 用于集成的新 API：可用于测试框架的`MockitoSession`（自 2.15.+ 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_session_testing_frameworks)
+
+- 44.[ 已弃用，`org.mockito.plugins.InstantiatorProvider`因为它会泄漏内部 API。它被替换为`org.mockito.plugins.InstantiatorProvider2 (Since 2.15.4)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_instantiator_provider_deprecation)
+
+- 45.[新的 JUnit Jupiter (JUnit5+) 扩展](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#junit5_mockito)
+
+- 46.[ 新的`Mockito.lenient()`和`MockSettings.lenient()`的方法（自2.20.0）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_lenient)
+
+- 47.[用于清除内联mock中mock状态的新 API（自 2.25.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#clear_inline_mocks)
+
+  
+
+# 五：参考
 
 | 修饰符和类型                       | 方法和说明                                                   |
 | ---------------------------------- | ------------------------------------------------------------ |

@@ -121,7 +121,7 @@ Mockito 库允许创建mock对象，验证方法调用用和存根方法调用�
 - 一旦被存根，该方法将始终返回一个存根值，无论它被调用多少次。
 - 最后的存根更重要 - 当您多次用相同的参数存根相同的方法时。换句话说：**存根的顺序**很**重要，**但它只是很少有意义，例如当存根完全相同的方法调用或有时使用参数匹配器时等。
 
-#### 参数匹配
+#### 3.参数匹配
 
 Mockito验证参数值使用自然java风格。即通过使用`equals()`方法。有时，当需要额外的灵活性时，您可以使用参数匹配器：
 
@@ -155,7 +155,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
 
 如果您使用参数匹配器，则**所有参数**都必须由匹配器提供。
 
-以下示例展示了验证，但同样适用于存根：
+以下示例展示了在验证时使用参数匹配器，但是在存根方法调用时它同样适用：
 
 ```java
    verify(mock).someMethod(anyInt(), anyString(), eq("third argument"));
@@ -165,7 +165,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
    //上面的写法是错误的 - 异常会被抛出因为第三个参数并不是参数匹配器的形式
 ```
 
-匹配器方法如`anyObject()`，`eq()` **不会**返回匹配器。在内部，它们在堆栈上记录一个匹配器并返回一个虚拟值（通常为空）。此实现是由于 java 编译器强加的静态类型安全。结果是您不能在使用`anyObject()`,`eq()`方法验证/存根之外的方法。
+匹配器方法如`anyObject()`，`eq()` **不会**返回匹配器。在内部，它们在堆栈上记录一个匹配器并返回一个虚拟值（通常为空）。此实现是由于 java 编译器强加的静态类型安全。结果是您不能在验证/存根之外的方法使用`anyObject()`,`eq()`方法。
 
 ### 4.验证确切的调用次数/至少调用x次/从未调用
 
@@ -268,7 +268,7 @@ Mockito验证参数值使用自然java风格。即通过使用`equals()`方法�
  verifyZeroInteractions(mockTwo, mockThree);
 ```
 
-#### 寻找多余的调用
+#### 8.寻找多余的调用
 
 ```java
 
@@ -308,7 +308,7 @@ public class ArticleManagerTest {
 }
 ```
 
-**重要的：以下代码需要在基类或测试运行器的某个地方：
+**重要**：以下代码需要在基类或测试运行器的某个地方：
 
 ```java
  MockitoAnnotations.openMocks(testClass);
@@ -481,7 +481,7 @@ Foo mockTwo = mock(Foo.class, new YourOwnAnswer());
 
 ### 15.为进一步的断言[捕获参数](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captors)（自 1.8.0 起）
 
-Mockito 通过使用`equals()`方法实现了自然的 Java 风格验证参数值。这也是推荐的匹配参数的方式，因为它使测试变得干净和简单。但在某些情况下，捕获参数对某些进行断言是有帮助的。例如：
+Mockito 通过使用`equals()`方法实现了自然的 Java 风格验证参数值。这也是推荐的匹配参数的方式，因为它使测试变得干净和简单。在某些情况下，在实际验证后对某些参数断言是有帮助的。例如：
 
 ```java
    ArgumentCaptor<Person> argument = ArgumentCaptor.forClass(Person.class);
@@ -727,9 +727,9 @@ Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户�
 
 ### 27.[将调用委托给真实对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#delegating_call_to_real_instance)（自 1.9.5 起）
 
-对于使用一般的spy API**难以mock或监视**的对象，可以使用其spy或部分**mock**。从 Mockito 1.10.11 开始，委托可能与mock的类型相同，也可能不同。如果类型不同，则需要在委托类型上找到匹配的方法，否则抛出异常。此功能的可能用例：
+对于使用一般的spy API**难以mock或监视**的对象，可以使用其进行监视或部分**mock**。从 Mockito 1.10.11 开始，委托可能与mock的类型相同，也可能不同。如果类型不同，则需要在委托类型上找到匹配的方法，否则抛出异常。此功能的可能用例：
 
-- Final类但带有接口
+- final类但带有接口
 - 已经自定义代理对象
 - 具有finalize方法的特殊对象，即避免执行 2 次
 
@@ -981,7 +981,7 @@ Mockito 现在保留对mock方法的类型以及通用元数据的注解。以�
 
 ### 39.[mock final类、枚举和 final方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Mocking_Final)（自 2.1.0 起）
 
-Mockito 现在为mock final 类和方法提供了一个可选的支持，[`Incubating`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Incubating.html)。这是一项了不起的改进，展示了 Mockito 对改进测试体验的永恒追求。我们的目标是 Mockito “只适用于”final 类和方法。以前它们被认为是*unmockable*的，防止用户mock。我们已经开始讨论如何默认启用此功能。目前，该功能仍然是可选的，因为我们正在等待社区的更多反馈。
+Mockito 现在为mock final类和方法提供了一个可选的支持：[`Incubating`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Incubating.html)。这是一项了不起的改进，展示了 Mockito 对改进测试体验的永恒追求。我们的目标是 Mockito “只适用于”final 类和方法。以前它们被认为是*unmockable*的，防止用户mock。我们已经开始讨论如何默认启用此功能。目前，该功能仍然是可选的，因为我们正在等待社区的更多反馈。
 
 这个替代的mock生成器使用 Java Instrumentation API 和子类的组合，而不是创建一个新类来表示mock。这样，就可以mock final类和方法了。
 
