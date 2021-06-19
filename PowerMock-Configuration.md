@@ -4,9 +4,9 @@
 自 PowerMock 1.7.0 起可用的功能
 ```
 
-从1.7.0版本开始，可以全局配置PowerMock。此配置适用于类路径中的所有测试类。您可以通过将以下文件添加到类路径来创建来启用配置：
+从1.7.0版本开始，可以全局配置PowerMock。此配置适用于类路径中的所有测试类。您可以通过将以下文件添加到类路径来创建并启用配置：
 
-```
+```text
 org/powermock/extensions/configuration.properties
 ```
 
@@ -14,7 +14,7 @@ org/powermock/extensions/configuration.properties
 
 默认情况下，PowerMock使用其[MockClassLoader](http://www.javadoc.io/doc/org.powermock/powermock-core/2.0.0)加载所有类。该类加载器加载并修改了所有类，除了：
 
-* 系统类。它们被推迟到系统类加载器
+* 系统类。它们被推迟到系统类加载器。
 * 位于指定为忽略的包中的类。
 
 在1.7.0之前，忽略包的唯一方法是使用 [@PowerMockIgnore](http://www.javadoc.io/doc/org.powermock/powermock-core/2.0.0) 注解:
@@ -53,3 +53,4 @@ mockito.mock-maker-class=mock-maker-inline
 ```
 
 这是一个关于在PowerMock中使用 Mockito `mock-maker-inline` 的[示例](https://github.com/powermock/powermock-examples-maven/tree/master/mockito2) 。
+
