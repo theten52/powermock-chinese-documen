@@ -23,4 +23,6 @@
 * [贡献者](Contributors)
 * Mockito 文档
   * [Mockito 文档](Mockito-Doc)
-  * [Mockito 详解](MockitoCookBook.md)
+  * [Mockito 详解](MockitoCookBook)
+  * [如何使用 Mockito](Mockito-usage)
+
