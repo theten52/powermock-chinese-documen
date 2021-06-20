@@ -4,12 +4,45 @@
 
 ## 一：创建mock/spy对象
 
-### 创建mock对象
+### 0：概述
+
+Mockito可以帮助我们方便的创建**被测对象**、**mock对象**和**spy对象**。
+
+- 创建被测对象：
+  - 先解释一下被测对象：就是单元测试中我们想要测试的那个类。如xxxService、xxxUtils等等。
+  - 使用@InjectMocks注解创建：
+    - 配合`@RunWith(MockitoJUnitRunner.class)`使用或在`@Before`方法中使用`MockitoAnnotations.openMocks(this)`来激活Mockito 注解的相关功能。
+    - 如果同时也使用了@Mock注解或者@Spy注解。Mockito可以方便的将这两个注解生成的对象注入到@InjectMocks注解的对象的成员变量中。
+  - 直接创建：
+    - 当然我们可以直接new一个被测对象，但是我们不能方便的使用Mockito为我们提供的自动注入成员变量的功能了。当然我们可以手动的现在这些注入的工作。
+- 创建mock对象：
+  - mock对象：一般是被测对象依赖的对象（比如被测对象的成员变量）。
+  - 使用@Mock注解：
+    - 配合`@RunWith(MockitoJUnitRunner.class)`使用或在`@Before`方法中使用`MockitoAnnotations.openMocks(this)`来激活Mockito 注解的相关功能。
+    - 被@Mock注解的对象会被自动注入到@InjectMocks注解生成的被测对象中。
+  - 使用Mockito.mock();
+    - 生成的mock对象需要手动配置到被测对象中，不推荐。
+  - 注意：
+    - mock对象中的方法被调用时默认会返回对应类型对象的空值。方法实际的代码不会被执行。当前如果我们想要执行实际的代码也是可以的：
+      - 我么可以先对此方法进行存根操作，此时使用doCallRealMethod()或者thenCallRealMethod()方法即可。下文会具体描述如何操作。
+      - 也可以通过指定返回值策略（Mockito.CALLS_REAL_METHODS）的方式实现。即创建mock对象时指定返回值策略为Mockito.CALLS_REAL_METHODS。
+    - mock对象中的方法被调用时默认会返回对应类型对象的空值。许多情况下当我们不对某个方进行存根时那么返回的值就是null，测试过程中就会产生NPE。但是我们可以在创建mock对象时指定返回值生成策略（Answer策略）。下文会具体描述如何操作。
+- 创建spy对象：
+  - spy对象：部分mock的对象。一般是被测对象依赖的对象（比如被测对象的成员变量）。
+  - 使用@Spy注解：
+    - 配合`@RunWith(MockitoJUnitRunner.class)`使用或在`@Before`方法中使用`MockitoAnnotations.openMocks(this)`来激活Mockito 注解的相关功能。
+    - 被@Spy注解的对象会被自动注入到@InjectMocks注解生成的被测对象中。
+  - 使用Mockito.spy();
+    - 生成的spy对象需要手动配置到被测对象中，不推荐。
+  - 注意：
+    - spy对象中的方法被调用时默认情况下方法实际的代码**会被执行**。当前如果我们想要**不执行**实际的代码也是可以的：
+      - 我么可以先对此方法进行存根操作，此时使用doXXXX()方法即可（注意不要使用或者thenXXXX()方法，会给我们带来麻烦：实际的代码会在此时被调用一次）。下文会具体描述如何操作。
+
+### 1：创建mock对象
 
 - 使用Mockito.mock()方法。
 
   ```java
-  {
           //org.mockito.Mockito.mock(java.lang.Class<T>)
           //org.mockito.Mockito.mock(java.lang.Class<T>, java.lang.String)
           //org.mockito.Mockito.mock(java.lang.Class<T>, org.mockito.stubbing.Answer)
@@ -29,14 +62,13 @@
           });
           //方式4：使用MockSettings配置当前mock
           Foo foo4 = Mockito.mock(Foo.class, Mockito.withSettings().defaultAnswer(Mockito.RETURNS_SMART_NULLS));
-  
-      }
   ```
   
 - 使用@InjectMocks和@Mock注解。
 
-  - 被@InjectMocks注解的对象一般就是我们被测的对象。它会被自动的实例化。且其包含的成员变量会被相应的@Mock注解的对象自动赋值。注意观察下面的示例：
-
+  - 被@InjectMocks注解的对象就是要被我们测试的对象，它会被自动的实例化。且其包含的成员变量会被相应的@Mock注解的对象自动赋值。注意观察下面的示例：
+  - 注意使用了`@RunWith(MockitoJUnitRunner.class)`注解。
+  
   ```java
   
   public class Foo {
@@ -48,7 +80,7 @@
       }
   }
   ```
-
+  
   ```java
   
   public class Bar {
@@ -58,26 +90,27 @@
       }
   }
   ```
-
+  
   ```java
+  //注意我们使用了MockitoJUnitRunner
+  @RunWith(MockitoJUnitRunner.class)
   public class MockitoTest {
+    	//foo 对象内部的成员变量会自动被 @Mock 注解的生成的对象注入。
       @InjectMocks
       private Foo foo;
   
-      @Mock(
-          answer = Answers.RETURNS_DEFAULTS,
-          stubOnly = false,
-          name = "bar",
-          extraInterfaces = {},
-          serializable = false,
-          lenient = false
-      )
+    	//bar 对象会自动的注入到 @InjectMocks 注解的对象的成员变量中去。
+      @Mock
       private Bar bar;
   
       @Test
       public void mockTest() {
+        	//先对mock对象的待测方法进行存根，当真正执行到mock对象的此方法时
+        	//会直接返回存根的结果而不会调用mock对象的实际代码
           Mockito.when(bar.add(1, 2)).thenReturn(7);
-          int result = foo.sum(1, 2);
+          
+        	int result = foo.sum(1, 2);
+        	//验证是否是存根返回的值
           Assert.assertEquals(7, result);
       }
   }
@@ -100,12 +133,12 @@
     - Mockito.CALLS_REAL_METHODS
       - 一个调用实际方法(用于部分mock)的Answer。
 
-### 创建spy对象
+### 2：创建spy对象
 
 - 使用Mockito.spy()方法
 
   ```java
-  {
+      {
           //org.mockito.Mockito.spy(java.lang.Class<T>)
           //org.mockito.Mockito.spy(T)
   
@@ -113,17 +146,33 @@
           List spy1 = Mockito.spy(List.class);
           //方式2：spy一个已存在的对象
           List spy2 = Mockito.spy(new ArrayList<>());
+  
+          //便利的 API, 新的重载的 spy() 方法:
+          SomeAbstract spy = spy(SomeAbstract.class);
+  
+          //Mocking 抽象, spy 接口的默认方法(从2.7.13可用)
+          Function function = spy(Function.class);
+  
+          //健壮的 API, 来自 settings builder:
+          OtherAbstract spy = mock(OtherAbstract.class, withSettings()
+              .useConstructor().defaultAnswer(CALLS_REAL_METHODS));
+  
+          //Mock一个抽象类，使用构造函数(从 2.7.14 可用)
+          SomeAbstract spy = mock(SomeAbstract.class, withSettings()
+              .useConstructor("arg1", 123).defaultAnswer(CALLS_REAL_METHODS));
+  
+          //mock一个非静态内部抽象类
+          InnerAbstract spy = mock(InnerAbstract.class,withSettings().useConstructor().outerInstance(outerInstance).defaultAnswer(CALLS_REAL_METHODS));
       }
   ```
-
   
-
 - 使用@Spy注解。
 
   - 被@InjectMocks注解的对象一般就是我们被测的对象。它会被自动的实例化。且其包含的成员变量会被相应的@Spy注解的对象自动赋值。注意观察下面的示例：
   - 注意使用了`@RunWith(MockitoJUnitRunner.class)`注解。
 
   ```java
+  //注意我们使用了MockitoJUnitRunner
   @RunWith(MockitoJUnitRunner.class)
   public class MockitoTest {
       @InjectMocks
@@ -138,15 +187,16 @@
   
       @Test
       public void mockTest() {
-          //对spy对象打桩
+          //对spy对象的add方法进行存根
           Mockito.when(bar.add(1, 2)).thenReturn(7);
-          int result = foo.sum(1, 2);
+          
+        	int result = foo.sum(1, 2);
           Assert.assertEquals(7, result);
       }
   
       @Test
       public void mockTest2() {
-          //不对spy对象打桩，则调用实际的方法。
+          //不对spy对象存根，则调用实际的方法。
           //注意同mock对象的区别：mock对象默认是返回类型的空值。而spy对象是默认执行实际方法并返回。
           int result = foo.sum(1, 2);
           Assert.assertEquals(3, result);
@@ -159,7 +209,7 @@
   - 与mock对象的区别：
 
     - mock对象的默认返回类型的空值（可以配置返回策略），不执行实际方法。
-    - spy对象是默认执行实际方法并返回。
+    - spy对象是默认执行实际方法并返回，可以对spy对象的某个方法进行存根以指定返回值且避免调用此方法实际逻辑。
   
   - 有时将`when(Object)`用于已经存根的spy对象是不可能或不切实际的。因此在使用spy时请考虑使用`doReturn`|`Answer`|`Throw()`存根方法族。例子：
   
@@ -167,7 +217,12 @@
        List list = new LinkedList();
        List spy = spy(list);
     
-       //以下代码是不可能: 真正的函数会被调用，spy.get(0) 会抛出 IndexOutOfBoundsException (list仍然是空的)
+       //以下代码是不可能: spy.get(0)方法实际的代码会被调用， 会抛出
+    	 //IndexOutOfBoundsException (list仍然是空的)。
+       //为什么在存根的时候就会调用方法实际的代码？这样不就无法对此方法进行存根了吗？
+       //因为在执行when(spy.get(0))的时候首先执行的是when()方法内的spy.get(0)；
+       //而此时spy.get(0)还没有进行存根。故此方法的实际代码会被调用。要解决这个问题，
+       //请使用doXXX()方法配合when()进行存根。
        when(spy.get(0)).thenReturn("foo");
     
        //你需要用 doReturn() 去存根
@@ -177,11 +232,13 @@
   
   - Mockito **不会**将调用传递给的真实实例，实际上创建了它的副本。因此，如果您保留真实实例并与之交互，则不要指望监视的人会知道这些交互及其对真实实例状态的影响。相应的，当**unstubbed**（没有进行存根）的方法在**spy对象上**调用但**不在真实实例上时**，您将看不到对真实实例的任何影响。
   
-  - 注意`final方法`。Mockito 不会 mock `final方法`，所以底线是：当您监视真实对象时 + 尝试存根 `final方法` = 麻烦。您也将无法验证这些方法
+    - 意思就是spy对象其实是真实对象的一个**复制体**；对spy中的方法的调用不会影响到真实对象。
+  
+  - 注意`final方法`。Mockito 不会 mock `final方法`，所以底线是：当您监视真实对象时（使用spy()方法） + 尝试存根 `final方法` = 麻烦。您也将无法验证这些方法。
 
-### 创建被测对象
+### 3：创建被测对象
 
-- 使用@InjectMocks注解。
+- 使用@InjectMocks注解。（需要配合`@RunWith(MockitoJUnitRunner.class)`使用或在`@Before`方法中使用`MockitoAnnotations.openMocks(this)`来激活Mockito 注解的相关功能。）
 
   ```java
   {
@@ -189,10 +246,12 @@
       private Foo foo;
   
       @Mock
-      private Bar bar;
-  
+      private Bar bar; 
+    
   }
   ```
+
+  - 说明：被测对象`foo`内如果包含`Bar`类型的成员变量，此时Mockito会自动将`bar`注入到`foo`中被`@InjectMocks`注解的对象`foo`在调用其方法时会执行其实际的代码逻辑。而被`@Mock`注解的对象`bar`中的方法被调用时不会执行实际的代码逻辑,而是返回类型相关的空值。
 
   ```java
   {
@@ -205,14 +264,16 @@
   }
   ```
 
+  - 说明：与上面不同的是`bar`对象是一个`spy`对象。默认情况下当`bar`对象的某个方法被调用时会执行实际的代码。当然可以对`bar`对象的某个方法进行存根，从而指定此方法的返回值，而不用调用其实际方法。要注意的是存根的方式要使用`doXXXX(x).when(spy).m1()`而不是`when(spy.m1()).thenReturn(x)`的方式；因为后者会在存根过程中会调用一次方法实际的代码逻辑。
+
 - 注意事项：
 
-  - @InjectMocks的作用：标记应执行注入的字段。
+  - @InjectMocks的作用：标记应执行注入的字段（指此对象内的字段应该被自动的注入，注入的值来自@Mock或@Spy注解的字段）。
 
     - 允许快速的mock和spy注入。
     - 最大限度地减少重复的mock和spy注入代码。
 
-    Mockito 将尝试仅通过构造函数注入、setter 注入或属性注入依次注入mock对象，如下所述。如果以下任一策略失败，则 Mockito**不会报告失败**；即您必须自己提供依赖项。
+    **【~~太长了这一段可以不看~~：主要说了@InjectMocks注解的对象如何自动注入@Mock和@Spy字段】**Mockito 将尝试仅通过构造函数注入、setter 注入或属性注入依次注入mock对象，如下所述。如果以下任一策略失败，则 Mockito**不会报告失败**；即您必须自己提供依赖项。
 
     1. 构造函数注入：选择最大的构造函数（方法参数最多），然后使用仅在测试类中声明的mock来解析参数。如果使用构造函数成功创建了对象，则 Mockito 不会尝试其他策略。Mockito 决定不破坏具有参数构造函数的对象。
 
@@ -222,13 +283,13 @@
 
        注意1：如果你有相同类型（或类型擦除后相同）的属性，最好用匹配的属性命名所有@Mock注解的字段，否则 Mockito 可能会产生混淆并且不会注入。
 
-       注2：如果@InjectMocks 对象之前没有初始化并且有一个无参数构造函数，那么它将用这个构造函数初始化。
+       注意2：如果@InjectMocks 对象之前没有初始化并且有一个无参数构造函数，那么它将用这个构造函数初始化。
 
     3. 字段注入：Mockito 将首先按类型解析（如果单个类型匹配则不管名称如何都会发生注入），然后，如果有多个相同类型的属性，则通过字段名称和mock对象名称的匹配进行注入。
 
        注意1：如果你有相同类型（或类型擦除后相同）的字段，最好用匹配的字段命名所有@Mock注解的字段，否则 Mockito 可能会产生淆并且不会注入。
 
-       注2：如果@InjectMocks 对象之前没有初始化并且有一个无参数构造函数，那么它将用这个构造函数初始化。
+       注意2：如果@InjectMocks 对象之前没有初始化并且有一个无参数构造函数，那么它将用这个构造函数初始化。
 
     
 
@@ -338,80 +399,96 @@
 
     Mockito 不是依赖注入框架，不要指望这个快速实用程序可以注入复杂的对象图，无论是mocks/spies对象还是真实对象。
 
-### 示例
+### 4：参考
 
-- 9.mocks的简单创建方式--[`@Mock`注解](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_annotation)
-- 16.[真正的部分mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#partial_mocks)（自 1.8.0 起）
-- 20.新注释：[`@Captor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captor_annotation), [`@Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy_annotation), [`@InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#injectmocks_annotation)（自 1.8.3 起）
-- 23.[使用`@Spies`， `@InjectMocks`自动实例化对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#automatic_instantiation)并具有[良好的构造函数注入](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#constructor_injection)（1.9.0以后）
-- 30.[监视或mock抽象类（自 1.10.12 起，在 2.7.13 和 2.7.14 中进一步增强）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spying_abstract_classes)
-- 32.[对深存根（deep stubs）更好的通用支持（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#better_generic_support_with_deep_stubs)
-- 33.[Mockito JUnit rule（自 1.10.17 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_junit_rule)
-- 37.[Java 8 自定义Answer支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Custom_Answers)（自 2.1.0 起）
-- 38.[元数据和泛型类型的保留](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Meta_Data_And_Generics)（自 2.1.0 起）
-- 39.[mock final类、枚举和 final方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Mocking_Final)（自 2.1.0 起）
-- 48.[mock静态方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#static_mocks)（自 3.4.0 起）
-- 49.[mock对象构造](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocked_construction)（自 3.5.0 起）
+- Mockito官方文档中的：
+  - 9.mocks的简单创建方式--[`@Mock`注解](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mock_annotation)
+  - 16.[真正的部分mock](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#partial_mocks)（自 1.8.0 起）
+  - 21.新注解：[`@Captor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captor_annotation), [`@Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy_annotation), [`@InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#injectmocks_annotation)（自 1.8.3 起）
+  - 23.[使用`@Spies`， `@InjectMocks`自动实例化对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#automatic_instantiation)并具有[良好的构造函数注入](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#constructor_injection)（1.9.0以后）
+  - 30.[监视或mock抽象类（自 1.10.12 起，在 2.7.13 和 2.7.14 中进一步增强）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spying_abstract_classes)
+  - 32.[对深存根（deep stubs）更好的通用支持（自 1.10.0 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#better_generic_support_with_deep_stubs)
+  - 33.[Mockito JUnit rule（自 1.10.17 起）](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mockito_junit_rule)
+  - 37.[Java 8 自定义Answer支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Custom_Answers)（自 2.1.0 起）
+  - 38.[元数据和泛型类型的保留](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Meta_Data_And_Generics)（自 2.1.0 起）
+  - 39.[mock final类、枚举和 final方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Mocking_Final)（自 2.1.0 起）
+  - 48.[mock静态方法](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#static_mocks)（自 3.4.0 起）
+  - 49.[mock对象构造](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#mocked_construction)（自 3.5.0 起）
+
+### 5：常见问题
+
+1. mock对象和spy对象有什么区别？
+   1. mock对象的默认返回类型的空值（可以配置返回策略），其方法被调用时不会执行实际的代码逻辑而是直接返回。
+   2. spy对象是默认执行实际方法逻辑并返回，可以对spy对象的某个方法进行存根以指定返回值且避免调用此方法实际逻辑。
+2. mock对象的返回值策略（Answer策略）有那些？如何配置？
+   1. 上文已介绍，请查阅。
+3. 对spy对象的某个方法进行存根时有什么特殊要求吗？为什么我有时明明做了存根操作，方法的实际逻辑还是会被调用？
+   1. 存根要求：使用doXXX(x).when(spy).m1()的方式而不是whenXXX(spy.m1()).thenXXX(x)的方式。
+   2. 实际逻辑为什么会被调用：因为使用了whenXXX(spy.m1()).thenXXX(x)存根方式。具体上文已介绍。请查阅。
+4. 创建这一系列测试相关的对象的最佳实践是什么？
+   1. 使用@InjectMocks注解，同时结合在类上使用注解@RunWith(MockitoJUnitRunner.class)而不是在@Before方法中使用MockitoAnnotations.openMocks(testClass)的方式创建被测对象。我们的原则是尽量使用注解的方式创建测试相关的对象。
+   2. 使用@Mock而不是Mockito.mock()方法创建mock对象。
+   3. 使用@Spy而不是Mockito.spy()方法创建spy对象。当然在某个具体测试方法内你发现@Spy不能方便的满足你的需求时请使用Mockito.spy()的方式。
 
 ## 二：存根方法调用
 
-- 定义存根方法的方式:
+### 1.定义存根方法的方式:
 
-  - Mockito.when(foo.sum()).thenXXX(...);
+- Mockito.when(foo.sum()).thenXXX(...);
 
-    - 即对foo.sum()方法存根。
-    - 注意：
-      - foo对象应该是一个mock对象。spy对象不建议使用此方式进行存根。因为当代码执行到when(foo.sum())时。foo.sum()方法会首先执行。导致sum()方法的实际代码逻辑被执行。（sum()的实际代码逻辑是否会被执行要看被spy对象的类型，当被spy对象是一个mock对象或者接口时不会执行-这些类型也没有实际代码逻辑可以执行。当被spy对象一个具体的对象时则实际代码逻辑会被执行）
+  - 即对foo.sum()方法存根。
+  - 注意：
+    - foo对象应该是一个mock对象。spy对象不建议使用此方式进行存根。因为当代码执行到when(foo.sum())时。foo.sum()方法会首先执行。导致sum()方法的实际代码逻辑被执行。（sum()的实际代码逻辑是否会被执行要看被spy对象的类型，当被spy对象是一个mock对象或者接口时不会执行-这些类型也没有实际代码逻辑可以执行。当被spy对象一个具体的对象时则实际代码逻辑会被执行）
 
-  - Mockito.doXXX(...).when(foo).sum();
+- Mockito.doXXX(...).when(foo).sum();
 
-    - 即对foo.sum()方法存根。
-    - 可以存根void方法。
-    - foo对象可以是一个mock对象，也可以是一个spy对象。
+  - 即对foo.sum()方法存根。
+  - 可以存根void方法。
+  - foo对象可以是一个mock对象，也可以是一个spy对象。
 
-  - Mockito.doXXX(....).when(foo.sum());
+- ~~Mockito.doXXX(....).when(foo.sum());~~
 
-    - 你会得到一个异常，即不应该使用这种方式！
+  - 你会得到一个异常，即不应该使用这种方式！
 
-    - ```java
-      org.mockito.exceptions.misusing.UnfinishedStubbingException: 
-      Unfinished stubbing detected here:
-      -> at c.FooTest.verifyTest(FooTest.java:23)
-      
-      E.g. thenReturn() may be missing.
-      Examples of correct stubbing:
-          when(mock.isOk()).thenReturn(true);
-          when(mock.isOk()).thenThrow(exception);
-          doThrow(exception).when(mock).someVoidMethod();
-      Hints:
-       1. missing thenReturn()
-       2. you are trying to stub a final method, which is not supported
-       3. you are stubbing the behaviour of another mock inside before 'thenReturn' instruction is completed
-      ```
+  - ```java
+    org.mockito.exceptions.misusing.UnfinishedStubbingException: 
+    Unfinished stubbing detected here:
+    -> at c.FooTest.verifyTest(FooTest.java:23)
+    
+    E.g. thenReturn() may be missing.
+    Examples of correct stubbing:
+        when(mock.isOk()).thenReturn(true);
+        when(mock.isOk()).thenThrow(exception);
+        doThrow(exception).when(mock).someVoidMethod();
+    Hints:
+     1. missing thenReturn()
+     2. you are trying to stub a final method, which is not supported
+     3. you are stubbing the behaviour of another mock inside before 'thenReturn' instruction is completed
+    ```
 
-- 定义返回值的方式：
+### 2.定义返回值的方式：
 
-  - | then_xxx方法                       | do_XXX方法                                                   |                                                              |
-    | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-    | then(Answer\<?> answer)            | doAnswer(Answer answer)                                      | 返回值使用自定义的Answer策略。                               |
-    | thenAnswer(Answer\<?> answer)      | 同上                                                         | 同上。                                                       |
-    | thenReturn(T value)                | doReturn(Object toBeReturned)                                | 直接指定返回值。                                             |
-    | thenReturn(T value, T... values)   | doReturn(Object toBeReturned, Object... toBeReturnedNext)    | 直接指定返回值，可以定义多个返回值。第一次调用到存根方法返回第一个返回值。以此类推。超过返回值数量的调用返回参数的最后一个返回值。 |
-    | thenCallRealMethod()               | doCallRealMethod()                                           | 调用实际的代码逻辑。不指定返回值。                           |
-    | thenThrow(Throwable... throwables) | doThrow(Throwable... toBeThrown)                             | 调用到存根方法时抛出异常。                                   |
-    | 同上                               | doThrow(Class\<? extends Throwable> toBeThrown)              | 调用到存根方法时抛出异常。可以定义多个异常。第一次调用到存根方法返回第一个异常。以此类推。超过异常数量的调用返回参数的最后一个异常。 |
-    | 同上                               | doThrow(Class\<? extends Throwable> toBeThrown, Class\<? extends Throwable>... toBeThrownNext) | 同上。                                                       |
-    | 无                                 | doNothing()                                                  | void方法使用的存根方式。                                     |
+- | then_xxx方法                       | do_XXX方法                                                   | 功能                                                         |
+  | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+  | then(Answer\<?> answer)            | doAnswer(Answer answer)                                      | 返回值使用自定义的Answer策略。                               |
+  | thenAnswer(Answer\<?> answer)      | 同上                                                         | 同上。                                                       |
+  | thenReturn(T value)                | doReturn(Object toBeReturned)                                | 直接指定返回值。                                             |
+  | thenReturn(T value, T... values)   | doReturn(Object toBeReturned, Object... toBeReturnedNext)    | 直接指定返回值，可以定义多个返回值。第一次调用到存根方法返回第一个返回值。以此类推。超过返回值数量的调用返回参数的最后一个返回值。 |
+  | thenCallRealMethod()               | doCallRealMethod()                                           | 调用实际的代码逻辑。不指定返回值。                           |
+  | thenThrow(Throwable... throwables) | doThrow(Throwable... toBeThrown)                             | 调用到存根方法时抛出异常。                                   |
+  | 同上                               | doThrow(Class\<? extends Throwable> toBeThrown)              | 调用到存根方法时抛出异常。可以定义多个异常。第一次调用到存根方法返回第一个异常。以此类推。超过异常数量的调用返回参数的最后一个异常。 |
+  | 同上                               | doThrow(Class\<? extends Throwable> toBeThrown, Class\<? extends Throwable>... toBeThrownNext) | 同上。                                                       |
+  | 无对应方法                         | doNothing()                                                  | void方法使用的存根方式。                                     |
 
 - 参数匹配器
 
   - 参数匹配器一般使用在存根方法的调用时。
   - 参数匹配器也可以使用在方法的验证时。
-  - example-3：参数匹配
+  - 3：参数匹配
     - 有关于参数匹配器的介绍
 
 - 示例
-  - example-2：添加一些存根（stub）：指定mock对象方法调用的返回值
+  - 2：添加一些存根（stub）：指定mock对象方法调用的返回值
     - 3个注意事项
   - 5.存根有异常的void方法
   - 10.[存根连续调用](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#stubbing_consecutive_calls)（iterator-style stubbing）
@@ -427,11 +504,16 @@
 - 注意事项：
   - TODO
 
+### 3.常见问题
+
+- 1.doXXX()系列方法和thenXXX()系列方法我们该使用哪类？
+  - 推荐所有的对方法的存根操作使用doXXX()系列方法。
+  - 第一：do系列方法可以正确的处理void方法的存根操作。
+  - 第二：do系列方法在存根spy对象时可以有好的进行。（避免被存根方法的实际代码逻辑会在存根时被调用一次的问题）
+
 ## 三：验证方法调用
 
-### 验证方法：
-
-### 方法是否被调用/方法的调用的次数
+### 1.方法是否被调用/方法的调用的次数
 
 - `atLeast(int minNumberOfInvocations)`允许至少 x 调用的验证。 
 - `atLeastOnce()`允许至少一次调用的验证。                      
@@ -445,19 +527,19 @@
 - `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 
 - `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 
 
-### 方法执行的时间
+### 2.方法执行时间的验证
 
 - `after(long millis)`在给定的毫秒数后将触发验证，允许测试异步代码。
 -  `timeout(long millis)`验证将一遍又一遍地触发，直到给定的毫秒数，允许测试异步代码。
 
-### 调用顺序验证
+### 3.方法调用顺序验证
 
 - `calls(int wantedNumberOfInvocations)`允许按顺序进行非贪婪调用的验证。
 - `inOrder(Object... mocks)`创建[`InOrder`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InOrder.html)对象，允许按顺序验证mock的对象。
 
-### 示例：
+### 4.参考：
 
-- example-1：验证mock对象的行为（方法是否被调用以及调用返回值）
+- 1：验证mock对象的行为（方法是否被调用以及调用返回值）
 - 4：验证确切的调用次数/至少调用x次/从未调用
 - 6：调用顺序验证
 - 7.确保在mock对象从未发生交互
@@ -468,7 +550,7 @@
 - 35.[自定义验证失败信息](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Custom_verification_failure_message)（自 2.1.0 起）
 - 40.[ 使用“更严格”的 Mockito 提高生产力和编写更简明的测试](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#strict_mockito)（自 2.+ 起）
 
-### 验证方法参考：
+### 5.验证方法参考：
 
 | 修饰符和类型                     | 方法和说明                                                   |
 | -------------------------------- | ------------------------------------------------------------ |

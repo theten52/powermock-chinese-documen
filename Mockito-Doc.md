@@ -314,7 +314,7 @@ public class ArticleManagerTest {
  MockitoAnnotations.openMocks(testClass);
 ```
 
-您可以使用内置 runner:[`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)或规则: [`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)。对于 JUnit5 测试，请参阅[第 45 节中](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#45)描述的 JUnit5 扩展。
+或者您可以使用内置的 Runner:[`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)或Rule: [`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)。对于 JUnit5 测试，请参阅[第 45 节中](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#45)描述的 JUnit5 扩展。
 
 在此处阅读更多信息： [`MockitoAnnotations`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoAnnotations.html)
 
@@ -771,7 +771,7 @@ Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户�
 以前，只能对对象实例进行监视。新的 API 使得在创建mock实例时使用构造函数成为可能。这对于mock抽象类特别有用，因为用户不再需要提供抽象类的实例。目前只支持无参数构造函数，如果还不够，请告诉我们。
 
 ```java
- //便利的 API, 新重载的 spy() 方法:
+ //便利的 API, 新的重载的 spy() 方法:
  SomeAbstract spy = spy(SomeAbstract.class);
 
  //Mocking 抽象, spy 接口的默认方法(从2.7.13可用)
@@ -787,7 +787,7 @@ Mockito 提供 API 来检查mock对象的详细信息。此 API 对高级用户�
 
  //mock一个非静态内部抽象类
  InnerAbstract spy = mock(InnerAbstract.class, withSettings()
-    .useConstructor().outerInstance(outerInstance).defaultAnswer(CALLS_REAL_METHODS));
+.useConstructor().outerInstance(outerInstance).defaultAnswer(CALLS_REAL_METHODS));
  
 ```
 
