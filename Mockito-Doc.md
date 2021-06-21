@@ -518,7 +518,7 @@ Mockito 通过使用`equals()`方法实现了自然的 Java 风格验证参数�
   
 ```
 
-像往常一样，您将阅读**部分mock警告**：面向对象编程通过将复杂性划分为单独的、特定的 SRPy 对象来减少复杂性。部分部分mock如何适应这种范式？嗯，它只是没有......部分mock通常意味着复杂性已转移到同一对象上的不同方法。在大多数情况下，这不是您想要设计应用程序的方式。
+像往常一样，您将看到**部分mock的警告**：面向对象编程通过将复杂性划分为单独的、特定的 SRPy 对象来减少复杂性。部分部分mock如何适应这种范式？嗯，它只是没有......部分mock通常意味着复杂性已转移到同一对象上的不同方法。在大多数情况下，这不是您想要设计应用程序的方式。
 
 但是，在极少数情况下，部分mock会派上用场：处理您无法轻松更改的代码（第 3 方接口、遗留代码的临时重构等）但是，我不会将部分mock用于新的、测试驱动的 & 良好设计的代码。
 
@@ -605,9 +605,9 @@ mock可以被序列化。使用此功能，您可以在需要可序列化依赖�
  
 ```
 
-### 21. 新注释：[`@Captor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captor_annotation), [`@Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy_annotation), [`@InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#injectmocks_annotation)（自 1.8.3 起）
+### 21. 新注解：[`@Captor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#captor_annotation), [`@Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy_annotation), [`@InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#injectmocks_annotation)（自 1.8.3 起）
 
-1.8.3 版带来了有时可能有用的新注释：
+1.8.3 版带来了有时可能有用的新注解：
 
 - @[`Captor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Captor.html)简化了[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html) - 当要捕获的参数是一个讨厌的泛型类并且您想避免编译器警告时很有用
 - @ [`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)-您可以用它替代[`spy(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#spy-T-)。
@@ -615,7 +615,7 @@ mock可以被序列化。使用此功能，您可以在需要可序列化依赖�
 
 注意@[`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)也可以与@[`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)注解结合使用，这意味着Mockito会将mock注入到被测的部分mock中。这种复杂性是您应该只使用部分mock作为最后手段的另一个很好的原因。请参阅有关部分mock的第 16 点。
 
-所有新注解**仅**在 [`MockitoAnnotations.openMocks(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoAnnotations.html#openMocks-java.lang.Object-) 上处理。就像 @[`Mock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mock.html)注释一样，您可以使用内置的 runner:[`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)或 rule: [`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)。
+所有新注解**仅**在 [`MockitoAnnotations.openMocks(Object)`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/MockitoAnnotations.html#openMocks-java.lang.Object-) 上处理。就像 @[`Mock`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mock.html)注解一样，您可以使用内置的 runner:[`MockitoJUnitRunner`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoJUnitRunner.html)或 rule: [`MockitoRule`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/junit/MockitoRule.html)。
 
 
 
@@ -644,7 +644,7 @@ mock可以被序列化。使用此功能，您可以在需要可序列化依赖�
  
 ```
 
-### 23.[使用`@Spies`， `@InjectMocks`自动实例化对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#automatic_instantiation)并具有[良好的构造函数注入](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#constructor_injection)（1.9.0以后）
+### 23.[使用`@Spy`， `@InjectMocks`自动实例化对象](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#automatic_instantiation)并具有[良好的构造函数注入](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#constructor_injection)（1.9.0以后）
 
 Mockito 现在将尝试使用 @[`Spy`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Spy.html)实例化对象并将[`InjectMocks`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/InjectMocks.html)实例化的字段使用**构造函数**注入、**setter**注入或**字段**注入。
 
@@ -867,9 +867,9 @@ Mockito 现在提供了一个 JUnit rule。直到现在JUnit中有两种方法�
 
 ### 36. [Java 8 Lambda 匹配器支持](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/Mockito.html#Java_8_Lambda_Matching)（自 2.1.0 起）
 
-您可以使用 Java 8 lambda 表达式和[`ArgumentMatcher`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatcher.html)来减少对[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html)的依赖. 如果您需要验证mock对象上函数调用的输入是否正确，那么您通常会使用[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html)来查找使用的参数，然后对它们进行后续断言。虽然对于复杂的示例，这可能很有用，但也是冗长的。
+您可以使用 Java 8 lambda 表达式和[`ArgumentMatcher`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentMatcher.html)来减少对[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html)的依赖. 如果您需要验证mock对象上方法调用的输入是否正确，那么您通常会使用[`ArgumentCaptor`](https://javadoc.io/static/org.mockito/mockito-core/3.11.1/org/mockito/ArgumentCaptor.html)来查找使用的参数，然后对它们进行后续断言。虽然对于复杂的示例，这可能很有用，但也是冗长的。
 
-编写一个 lambda 表达式来表达匹配是很容易的。当与 argThat 结合使用时，函数的参数将作为强类型对象传递给 ArgumentMatcher，因此可以对它执行任何操作。
+编写一个 lambda 表达式来表达匹配是很容易的。当与 argThat 结合使用时，方法的参数将作为强类型对象传递给 ArgumentMatcher，因此可以对它执行任何操作。
 
 例子：
 
