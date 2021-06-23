@@ -632,4 +632,19 @@ public class SampleBaseTestCase {
 
 Mockito 不是依赖注入框架，不要指望这个快速实用程序可以注入复杂的对象图，无论是mock/spy对象还是真实对象。
 
+## 四：常见问题
+
+1. mock对象和spy对象有什么区别？
+   1. mock对象的默认返回类型的空值（可以配置返回策略），其方法被调用时不会执行实际的代码逻辑而是直接返回。
+   2. spy对象是默认执行实际方法逻辑并返回，可以对spy对象的某个方法进行存根以指定返回值且避免调用此方法实际逻辑。
+2. mock对象的返回值策略（Answer策略）有那些？如何配置？
+   1. 上文已介绍，请查阅。
+3. 对spy对象的某个方法进行存根时有什么特殊要求吗？为什么我有时明明做了存根操作，方法的实际逻辑还是会被调用？
+   1. 存根要求：使用doXXX(x).when(spy).m1()的方式而不是whenXXX(spy.m1()).thenXXX(x)的方式。
+   2. 实际逻辑为什么会被调用：因为使用了whenXXX(spy.m1()).thenXXX(x)存根方式。具体上文已介绍。请查阅。
+4. 创建这一系列测试相关的对象的最佳实践是什么？
+   1. 使用@InjectMocks注解，同时结合在类上使用注解@RunWith(MockitoJUnitRunner.class)而不是在@Before方法中使用MockitoAnnotations.openMocks(testClass)的方式创建被测对象。我们的原则是尽量使用注解的方式创建测试相关的对象。
+   2. 使用@Mock而不是Mockito.mock()方法创建mock对象。
+   3. 使用@Spy而不是Mockito.spy()方法创建spy对象。当然在某个具体测试方法内你发现@Spy不能方便的满足你的需求时请使用Mockito.spy()的方式。
+
 ## 
