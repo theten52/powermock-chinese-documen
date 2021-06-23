@@ -34,7 +34,7 @@ Assert.assertEquals("1",m.m1());
 
 此时断言为真。
 
-## 一.创建方法存根的方式:
+## 一：创建方法存根的方式:
 
 - Mockito.when(foo.sum()).thenXXX(...);
 
@@ -69,7 +69,7 @@ Assert.assertEquals("1",m.m1());
      3. you are stubbing the behaviour of another mock inside before 'thenReturn' instruction is completed
     ```
 
-## 二.定义返回值的方式：
+## 二：定义返回值的方式：
 
 - | then_xxx方法                       | do_XXX方法                                                   | 功能                                                         |
   | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -544,7 +544,7 @@ public class MockitoTest {
 
 关于返回策略。请参考本系列文章【Java测试框架系列：Mockito 详解：第一部分：对象创建】。
 
-## 四：更改为存根方法的默认返回值。
+## 四：更改未存根方法的默认返回值。
 
 我们知道，默认情况下，对于所有方法的返回值，mock将返回 null、原始/原始包装值或空集合，具体视情况而定。
 
