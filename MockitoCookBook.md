@@ -515,7 +515,7 @@ Mockito可以帮助我们方便的创建**被测对象**、**mock对象**和**sp
 
 ### 1.方法是否被调用/方法的调用的次数
 
-- `atLeast(int minNumberOfInvocations)`允许至少 x 调用的验证。 
+- `atLeast(int minNumberOfInvocations)`允许至少 x 次调用的验证。 
 - `atLeastOnce()`允许至少一次调用的验证。                      
 - `atMost(int maxNumberOfInvocations)`允许最多 x 次调用的验证。 
 - `atMostOnce()`允许最多一次调用的验证。                
@@ -524,8 +524,9 @@ Mockito可以帮助我们方便的创建**被测对象**、**mock对象**和**sp
 - `times(int wantedNumberOfInvocations)`允许验证调用的确切次数。
 - `verify(T mock)`验证某些行为**发生过一次**。                 
 - `verify(T mock, VerificationMode mode)`验证某些行为至少发生过一次/确切的次数/从未发生过。 
-- `verifyNoInteractions(Object... mocks)`验证给定的模拟上没有发生交互。 
-- `verifyNoMoreInteractions(Object... mocks)`检查任何给定的模拟是否有任何未经验证的交互。 
+- `verifyNoInteractions(Object... mocks)`验证给定的mock对象上没有发生交互。 
+- `verifyNoMoreInteractions(Object... mocks)`检查任何给定的mock对象上是否有任何未经验证的交互。 
+- `validateMockitoUsage()`验证测试代码中是否有书写错误的地方。
 
 ### 2.方法执行时间的验证
 
